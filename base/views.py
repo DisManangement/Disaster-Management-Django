@@ -20,6 +20,14 @@ def volunteer(request):
 
     return render(request, 'base/volunteer/viewVolunteer.html')
 
+def alerts(request):
+
+    return render(request, 'base/alerts/alerts.html')
+
+def needs(request):
+
+    return render(request, 'base/needs/needs.html')
+
 
 
 
