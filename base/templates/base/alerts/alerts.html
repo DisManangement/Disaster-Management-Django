@@ -1,0 +1,72 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="w-full h-full bg-white rounded-lg">
+
+    <!-- TITLE -->
+
+    <div class="flex justify-between mx-12 pt-6">
+        <h3 class="font-bold bg-gray-200 px-4 rounded-lg py-1">
+           Alerts
+        </h3>
+        <!-- <a href="#" class="border border-stone-950 rounded-lg px-4 py-1 dropshadow text-zinc-900 font-medium hover:bg-black hover:text-white">Add Volunteer</a> -->
+    </div>
+
+    <!-- TABLE STARTS -->
+   
+     
+    
+
+
+<table class="table w-full mt-4">
+    <!-- TABLE HEAD -->
+    <thead class="table-head bg-amber-500 h-10 ">
+        <tr class="bg-gray-400 ">
+            <th>#</th>
+            <th>Name</th>
+            <th>Contact Number</th>
+            <th>Location</th>
+            <th>Remark</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <!-- TABLE HEAD ENDS -->
+    
+    <!-- TABLE BODY -->
+    <tbody >
+        <!-- ITEM -->
+        <tr class="bg-gray-100 ">
+            <!-- NAME -->
+            <th class="py-4">1</th>
+            <th class="py-4">Febin Mathew</th>
+            <th class="py-4">9747990207</th>
+            <th class="py-4">Kollam</th>
+            <th class="py-4">Help me</th>
+            <th class="py-4">pending(1m ago)</th>
+            <th class="py-4">
+                <!-- <a href="#" class="border border-green-600 rounded-lg px-4 py-1 bg-red mr-4 test-xs font-normal hover:bg-green-600  hover:text-white">Edit</a> -->
+                <button class=" border border-red-600   rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-normal">close</button>
+            </th>
+        </tr>
+      
+   
+        
+       
+       
+    </tbody>
+    <!-- TABLE BODY ENDS -->
+</table>
+
+
+    
+
+
+    
+</div>
+
+
+
+{% endblock content %}
