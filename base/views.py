@@ -28,6 +28,19 @@ def needs(request):
 
     return render(request, 'base/needs/needs.html')
 
+def addUser(request):
+
+    return render(request, 'base/user/adduser.html')
+
+def addState(request):
+
+    return render(request, 'base/stateCommittee/addState.html')
+
+
+def addVolunteer(request):
+
+    return render(request, 'base/volunteer/addVolunteer.html')
+
 
 
 
