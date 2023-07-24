@@ -13,5 +13,6 @@ urlpatterns= [
     path('addstate', views.addState, name='add-state'),
     path('addvolunteer', views.addVolunteer, name='add-volunteer'),
     path('createstate', views.createState, name='create-state'),
+    path('editstate/<str:pk>', views.editState, name='edit-state'),
 
 ]

@@ -37,63 +37,31 @@
     <!-- TABLE BODY -->
     <tbody >
         <!-- ITEM -->
+        {% for state in states %}
         <tr class="odd:bg-gray-100 even:bg-white">
             <!-- NAME -->
             <th class="py-4"><p class="text-black font-semibold text-base">1</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Febin Mathew</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">9747990207</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kollam</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kerala</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{state.name}}</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{state.phone}}</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{state.location}}</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{state.state}}</p></th>
             <th class="py-4">
-                <a href="#" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Edit</a>
+                <a href="{% url 'edit-state' state.id %}" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Edit</a>
                 <button class=" border border-red-600  text-red-600 rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-sm font-semibold">Delete</button>
             </th>
         </tr>
 
-        
-      
-        <tr class="odd:bg-gray-100 even:bg-white">
-            <!-- NAME -->
-            <th class="py-4"><p class="text-black font-semibold text-base">1</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Febin Mathew</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">9747990207</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kollam</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kerala</p></th>
-            <th class="py-4">
-                <a href="#" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Edit</a>
-                <button class=" border border-red-600  text-red-600 rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-sm font-semibold">Delete</button>
-            </th>
-        </tr>
+        {% endfor %}
 
         
       
-        <tr class="odd:bg-gray-100 even:bg-white">
-            <!-- NAME -->
-            <th class="py-4"><p class="text-black font-semibold text-base">1</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Febin Mathew</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">9747990207</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kollam</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kerala</p></th>
-            <th class="py-4">
-                <a href="#" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Edit</a>
-                <button class=" border border-red-600  text-red-600 rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-sm font-semibold">Delete</button>
-            </th>
-        </tr>
-
+        
         
       
-        <tr class="odd:bg-gray-100 even:bg-white">
-            <!-- NAME -->
-            <th class="py-4"><p class="text-black font-semibold text-base">1</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Febin Mathew</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">9747990207</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kollam</p></th>
-            <th class="py-4"><p class="text-black font-semibold text-base">Kerala</p></th>
-            <th class="py-4">
-                <a href="#" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Edit</a>
-                <button class=" border border-red-600  text-red-600 rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-sm font-semibold">Delete</button>
-            </th>
-        </tr>
+        
+        
+      
+        
 
         
       
