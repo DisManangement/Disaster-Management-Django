@@ -14,6 +14,11 @@ urlpatterns= [
     path('addvolunteer', views.addVolunteer, name='add-volunteer'),
     path('createstate', views.createState, name='create-state'),
     path('editstate/<str:pk>', views.editState, name='edit-state'),
+    path('editvolunteer/<str:pk>', views.editVolunteer, name='edit-volunteer'),
+    path('edituser/<str:pk>', views.editEndUser, name='edit-user'),
     path('createvolunteer', views.createVolunteer, name='create-volunteer'),
+    path('deletestate/<str:pk>', views.deleteState, name='delete-state'),
+    path('deleteuser/<str:pk>', views.deleteUser, name='delete-user'),
+    path('deletevolunteer/<str:pk>', views.deleteVolunteer, name='delete-volunteer'),
 
 ]
