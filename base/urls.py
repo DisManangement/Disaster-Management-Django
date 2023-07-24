@@ -12,4 +12,6 @@ urlpatterns= [
     path('adduser', views.addUser, name="add-user"),
     path('addstate', views.addState, name='add-state'),
     path('addvolunteer', views.addVolunteer, name='add-volunteer'),
+    path('createstate', views.createState, name='create-state'),
+
 ]
