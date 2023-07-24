@@ -1,17 +1,22 @@
 from django.shortcuts import render, redirect
-from .models import State
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import StateForm
+from .models import State, Volunteer, EndUser
+
 
 
 # Create your views here.
 
-
+""" ----VIEWS---- """
 
 def home(request):
 
-    return render(request, 'base/user/viewuser.html')
+    endUsers = EndUser.objects.all()
+
+    context = {'endUsers' : endUsers,}
+
+    return render(request, 'base/user/viewuser.html', context)
 
 
 def stateCommittee(request):
@@ -25,8 +30,12 @@ def stateCommittee(request):
 
 def volunteer(request):
 
+    volunteers = Volunteer.objects.all()
 
-    return render(request, 'base/volunteer/viewVolunteer.html')
+    context ={'volunteers':volunteers}
+
+
+    return render(request, 'base/volunteer/viewVolunteer.html', context)
 
 def alerts(request):
 
@@ -37,6 +46,28 @@ def needs(request):
     return render(request, 'base/needs/needs.html')
 
 def addUser(request):
+
+    if request.method =='POST':
+        username = request.POST.get('name')
+        phone = request.POST.get('number')
+        location = request.POST.get('location')
+        state = request.POST.get('state')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+
+        if User.objects.filter(email=email).exists():
+            messages.info(request, 'Email Already Taken')
+            return redirect('add-user')
+        elif User.objects.filter(username=username).exists():
+            messages.info(request, 'Username Already Exists')
+            return redirect('add-user')
+        else:
+           user = User.objects.create(username=username, email=email, password=password)
+           user.save()
+
+           EndUser.objects.create(host=user, name=username, location=location, state=state, phone=phone)
+
+           return redirect('/')
 
     return render(request, 'base/user/adduser.html')
 
@@ -147,6 +178,38 @@ def deleteState(request):
 """ <----------  STATE ENDS -------> """
 
   
+
+""" ---------- VOLUNTEER CRUD OPERATIONS ------ """
+
+
+def createVolunteer(request):
+   if request.method == 'POST':
+       username = request.POST.get('name')
+       phone = request.POST.get('number')
+       state = request.POST.get('state')
+       location = request.POST.get('location')
+       email = request.POST.get('email')
+       password = request.POST.get('password')
+
+       if User.objects.filter(email=email).exists():
+           messages.info(request, 'Email already taken')
+           return redirect('add-volunteer')
+       elif User.objects.filter(username=username):
+           messages.info(request, 'username already taken')
+           return redirect('add-volunteer')
+       else:
+           user = User.objects.create(username=username, email=email, password=password)
+           user.save()
+           Volunteer.objects.create(host=user, name=username, phone=phone, state=state, location=location)
+
+           return redirect('volunteer')
+           
+
+   
+   
+   
+
+
   
     
     

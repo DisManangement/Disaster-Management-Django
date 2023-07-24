@@ -18,7 +18,31 @@ class State(models.Model):
         return self.name
 
 
+class Volunteer(models.Model):
+    host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=200, null=True)
+    phone = models.BigIntegerField(null=True)
+    state = models.CharField(max_length=200, null=True)
+    location = models.TextField(null=True)
+    latitude = models.TextField(null=True)
+    longitude = models.TextField(null=True)
 
+    def __str__(self) -> str:
+        return self.name\
+        
+
+
+class EndUser(models.Model):
+    host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=200, null=True)
+    phone = models.BigIntegerField(null=True)
+    state = models.CharField(max_length=200, null=True)
+    location = models.TextField(null=True)
+    latitude = models.TextField(null=True)
+    longitude = models.TextField(null=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 
