@@ -15,18 +15,23 @@
 
     <!-- TABLE STARTS -->
    
-     
+    {% for message in messages %}
+   
+    <h4 class="text-red-600 font-semibold ml-60 mt-4 text-xs">{{message}}</h4>
+
+    {% endfor %}
     
 
 
 <div class="table w-full mt-4">
-    <form class="w-full flex flex-wrap gap-4 justify-center mt-10 " action="">
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" type="text" placeholder="Name">
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" type="number" placeholder="Contact Number">
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" type="text" placeholder="State">
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" type="email" placeholder="Email">
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" type="text" placeholder="Location">
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" type="password" placeholder="Password">
+    <form class="w-full flex flex-wrap gap-4 justify-center mt-10 " method="POST" action="">
+        {% csrf_token %}
+        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" required name="name" type="text" placeholder="Name">
+        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" required name="number" type="number" placeholder="Contact Number">
+        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" required name="state" type="text" placeholder="State">
+        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" required name="email" type="email" placeholder="Email">
+        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" required name="location" type="text" placeholder="Location">
+        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" required name="password" type="password" placeholder="Password">
         <input class="border rounded-lg w-[500px] h-10 outline-none px-4 bg-gray-600 text-white font-medium cursor-pointer hover:bg-gray-600/80" type="submit" value="Add">
     </form>
    
