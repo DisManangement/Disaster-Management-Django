@@ -31,7 +31,16 @@
    
         <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="name" type="text" placeholder="State committee Name">
         <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="number" type="number" placeholder="Contact Number">
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="state" type="text" placeholder="State">
+
+        <select name="state" class="border opacity-50 px-4 w-[500px] h-12 outline-none  drop-shadow border rounded-lg" id="state">
+            <option disabled selected value="0">select state</option>
+             {% for state in states %}
+            <option value="{{state.id}}">{{state.name}}</option>
+            {% endfor %}
+            
+          </select>
+
+        <!-- <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="state" type="text" placeholder="State"> -->
         <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="email" type="email" placeholder="Email">
         <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="location" type="text" placeholder="Location">
         <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="password" type="password" placeholder="Password">

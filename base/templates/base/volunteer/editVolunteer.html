@@ -43,7 +43,13 @@
         <div>
             <label class="text-sm font-semibold opacity-60" for="state">State</label><br>
 
-            <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="state" type="text" placeholder="State" value="{{volunteer.state}}">
+            <select name="state" class="border opacity-80 px-4 w-[500px] h-12 outline-none  drop-shadow border rounded-lg" id="state">
+                <option value="{{volunteer.state.id}}">{{volunteer.state.name}}</option>
+                 {% for state in states %}
+                <option value="{{state.id}}">{{state.name}}</option>
+                {% endfor %}
+                
+              </select>
         </div>
         
         <div>

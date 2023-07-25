@@ -20,5 +20,6 @@ urlpatterns= [
     path('deletestate/<str:pk>', views.deleteState, name='delete-state'),
     path('deleteuser/<str:pk>', views.deleteUser, name='delete-user'),
     path('deletevolunteer/<str:pk>', views.deleteVolunteer, name='delete-volunteer'),
+    path('volunteerhome', views.volunteerHome, name='volunteer-home')
 
 ]
