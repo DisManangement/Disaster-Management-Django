@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import StateForm
-from .models import State, Volunteer, EndUser
+from .models import StateCommittee, Volunteer, EndUser, State
 
 
 
@@ -21,9 +21,9 @@ def home(request):
 
 def stateCommittee(request):
 
-    states = State.objects.all()
+    stateCommittee = StateCommittee.objects.all()
 
-    context = {'states' :states,}
+    context = {'states' :stateCommittee,}
     
 
     return render(request, 'base/stateCommittee/viewStateCommittee.html', context)
@@ -47,13 +47,23 @@ def needs(request):
 
 def addUser(request):
 
+    #SET STATES
+
+    states = State.objects.all()
+
+    context = {'states': states}
+
+
+
     if request.method =='POST':
+
         username = request.POST.get('name')
         phone = request.POST.get('number')
         location = request.POST.get('location')
-        state = request.POST.get('state')
+        stateid = request.POST.get('state')
         password = request.POST.get('password')
         email = request.POST.get('email')
+        state = State.objects.get(id=stateid)
 
         if User.objects.filter(email=email).exists():
             messages.info(request, 'Email Already Taken')
@@ -69,16 +79,26 @@ def addUser(request):
 
            return redirect('/')
 
-    return render(request, 'base/user/adduser.html')
+    return render(request, 'base/user/adduser.html', context)
 
 def addState(request):
 
-    return render(request, 'base/stateCommittee/addState.html')
+    #setting all states
+
+    states = State.objects.all()
+    context = {'states': states}
+
+    return render(request, 'base/stateCommittee/addState.html', context)
 
 
 def addVolunteer(request):
 
-    return render(request, 'base/volunteer/addVolunteer.html')
+    #setting all states
+
+    states = State.objects.all()
+    context = {'states': states}
+
+    return render(request, 'base/volunteer/addVolunteer.html', context)
 
 
 
@@ -94,8 +114,13 @@ def createState(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         phone = request.POST.get('number')
-        state = request.POST.get('state')
+        stateid = request.POST.get('state')
         location = request.POST.get('location')
+        state = State.objects.get(id=stateid)
+        
+        print('id', stateid)
+        print('state', state)
+        
 
         if User.objects.filter(email=email).exists():
             messages.info(request, 'Email Taken')
@@ -108,7 +133,7 @@ def createState(request):
              user = User.objects.create_user(username=username, email=email, password=password)
              user.save()
 
-             State.objects.create(host=user,name=username,phone=phone, state=state, location=location)
+             StateCommittee.objects.create(host=user,name=username,phone=phone, state=state, location=location)
 
              return redirect('statecommittee') 
       
@@ -117,12 +142,11 @@ def createState(request):
 
 
 def editState(request, pk):
-    state = State.objects.select_related('host').get(id=pk)
-    user = state.host
-
-    print('user', user)
-
-    form = StateForm(instance=state)
+    stateCommittee = StateCommittee.objects.select_related('host').get(id=pk)
+    user = stateCommittee.host
+    
+    states = State.objects.exclude(id=stateCommittee.state.id)
+    
 
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -141,21 +165,23 @@ def editState(request, pk):
             return redirect(f'/editstate/{pk}')
 
         # Update state and user data
-        state.name = request.POST.get('name')
-        state.phone = request.POST.get('number')
-        state.state = request.POST.get('state')
-        state.location = request.POST.get('location')
+        stateid = request.POST.get('state')
+        state = State.objects.get(id=stateid)
+        stateCommittee.name = request.POST.get('name')
+        stateCommittee.phone = request.POST.get('number')
+        stateCommittee.state = state
+        stateCommittee.location = request.POST.get('location')
 
         user.email = email
         user.username = username
         user.set_password(request.POST.get('password'))
 
-        state.save()
+        stateCommittee.save()
         user.save()
 
         return redirect('statecommittee')
 
-    context = {'user': user, 'state': state}
+    context = {'user': user, 'stateCommittee': stateCommittee, 'states': states}
 
     return render(request, 'base/stateCommittee/editState.html', context)
 
@@ -182,9 +208,13 @@ def deleteState(request,pk):
 
 def createVolunteer(request):
    if request.method == 'POST':
+       
+       stateid = request.POST.get('state')
+       
+
        username = request.POST.get('name')
        phone = request.POST.get('number')
-       state = request.POST.get('state')
+       state = State.objects.get(id=stateid)
        location = request.POST.get('location')
        email = request.POST.get('email')
        password = request.POST.get('password')
@@ -220,6 +250,10 @@ def editVolunteer(request, pk):
     volunteer = Volunteer.objects.select_related('host').get(id=pk)
     user = volunteer.host
 
+    states = State.objects.exclude(id=volunteer.state.id)
+
+
+
     if request.method == 'POST':
         email = request.POST.get('email')
         username = request.POST.get('name')
@@ -237,9 +271,10 @@ def editVolunteer(request, pk):
             return redirect(f'/editvolunteer/{pk}')
 
         # Update state and user data
+        stateid = request.POST.get('state')
         volunteer.name = request.POST.get('name')
         volunteer.phone = request.POST.get('number')
-        volunteer.state = request.POST.get('state')
+        volunteer.state = State.objects.get(id=stateid)
         volunteer.location = request.POST.get('location')
 
         user.email = email
@@ -251,7 +286,7 @@ def editVolunteer(request, pk):
 
         return redirect('volunteer')
 
-    context = {'user': user, 'volunteer': volunteer}
+    context = {'user': user, 'volunteer': volunteer, 'states':states}
 
     return render(request, 'base/volunteer/editVolunteer.html', context)
            
@@ -269,11 +304,12 @@ def deleteUser(request, pk):
     user.delete()
     return redirect('/')
 
-
+# edit Enduser  
 
 def editEndUser(request, pk):
     enduser = EndUser.objects.select_related('host').get(id=pk)
     user = enduser.host
+    states = State.objects.exclude(id=enduser.state.id)
 
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -290,11 +326,13 @@ def editEndUser(request, pk):
         if existing_user:
             messages.info(request, 'Username Already Taken')
             return redirect(f'/edituser/{pk}')
+        
 
+        stateid = request.POST.get('state')
         # Update state and user data
         enduser.name = request.POST.get('name')
         enduser.phone = request.POST.get('number')
-        enduser.state = request.POST.get('state')
+        enduser.state = State.objects.get(id=stateid)
         enduser.location = request.POST.get('location')
 
         user.email = email
@@ -306,15 +344,40 @@ def editEndUser(request, pk):
 
         return redirect('/')
 
-    context = {'user': user, 'enduser': enduser}
+    context = {'user': user, 'enduser': enduser, 'states':states}
 
     return render(request, 'base/user/editEndUser.html', context)
 
 
+# VOLUNTEER HOME PAGE
+
+def volunteerHome(request):
+    return render(request, 'Front/volunteer.html')
 
 
-  
-    
+#  CREATE ALERTS
+
+def createAlert(request):
+    pass
+
+
+# CHANGE STATUS OF ALERT (UPDATE)
+
+def updateAlert(request):
+    pass
+
+# CREATE NEEDS
+
+def createNeeds(request):
+    pass
+
+
+# CHANGE STATUS OF NEEDS (UPDATE)
+
+def updateNeeds(request):
+    pass
+
+
     
     
         

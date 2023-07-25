@@ -31,19 +31,26 @@
         <div>
             <label class="text-sm font-semibold opacity-60" for="name">State Name</label><br>
 
-            <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="name" type="text" placeholder="State committee Name" value="{{state.name}}">
+            <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="name" type="text" placeholder="State committee Name" value="{{stateCommittee.name}}">
         </div>
        
         <div>
             <label class="text-sm font-semibold opacity-60" for="number">Contact Number</label><br>
 
-            <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="number" type="number" placeholder="Contact Number" value="{{state.phone}}">
+            <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="number" type="number" placeholder="Contact Number" value="{{stateCommittee.phone}}">
         </div>
         
         <div>
             <label class="text-sm font-semibold opacity-60" for="state">State</label><br>
 
-            <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="state" type="text" placeholder="State" value="{{state.state}}">
+            <select name="state" class="border opacity-80 px-4 w-[500px] h-12 outline-none  drop-shadow border rounded-lg" id="state">
+                <option value="{{stateCommittee.state.id}}">{{stateCommittee.state.name}}</option>
+                 {% for state in states %}
+                <option value="{{state.id}}">{{state.name}}</option>
+                {% endfor %}
+                
+              </select>
+    
         </div>
         
         <div>
@@ -55,7 +62,7 @@
        <div>
         <label class="text-sm font-semibold opacity-60" for="location">Location</label><br>
 
-        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="location" type="text" placeholder="Location" value="{{state.location}}">
+        <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="location" type="text" placeholder="Location" value="{{stateCommittee.location}}">
        </div>
        
        <div>
