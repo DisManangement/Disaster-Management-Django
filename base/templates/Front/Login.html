@@ -1,0 +1,23 @@
+{% extends 'home.html' %}
+
+
+
+{% block content %}
+
+<div class="w-[600px] min-h-[500px] bg-white mx-auto mt-12">
+    <form  method="POST" action="">
+        {% csrf_token %}
+        <div class="w-full h-[500px] flex flex-col items-center justify-center">
+            <h1 class="text-lg font-bold opacity-70 mb-12 tracking-widest">LOGIN</h1>
+
+            <input autofocus required type="email" name="email" placeholder="Email" class="border w-[400px] mb-12 h-12 rounded outline-none px-3 drop-shadow "> 
+            <input required type="password" name="password" placeholder="Password" class="border w-[400px] mb-12 h-12 rounded outline-none px-3 drop-shadow ">
+            <input type="submit" name="" id="" value="Login" class="text-white bg-stone-500/80 rounded font-bold w-[400px] cursor-pointer hover:bg-stone-500/70 p-2 mb-6">
+            <p class="text-black opacity-70">Don't have an Account ?<span><a class="text-stone-500 ml-2 hover:text-stone-600 font-semibold" href="{% url 'register' %}">Create Account</a></span> </p>
+        </div>
+    </form>
+
+</div>
+
+
+{% endblock content %}

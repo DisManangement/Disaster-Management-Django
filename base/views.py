@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import StateForm
-from .models import StateCommittee, Volunteer, EndUser, State
+from .models import StateCommittee, Volunteer, EndUser, State, Needs
+
 
 
 
@@ -349,16 +350,41 @@ def editEndUser(request, pk):
     return render(request, 'base/user/editEndUser.html', context)
 
 
+
+
+
+""" ------     HOME PAGES     ------ """
+
+#Login Page
+
+def login(request):
+    return render (request, 'Front/Login.html')
+
+#Register Page
+
+def register(request):
+    return render(request, 'Front/register.html')
+
+
+
 # VOLUNTEER HOME PAGE
 
 def volunteerHome(request):
+    if request.method == 'POST':
+        
+        requirements = request.POST.get('requirements')
+        host = Volunteer.objects.filter(host=request.user)
+
+        Needs.objects.create(host=host, requirements=requirements)
+
+        return redirect('volunteer-home')
+
     return render(request, 'Front/volunteer.html')
 
 
 #  CREATE ALERTS
 
-def createAlert(request):
-    pass
+
 
 
 # CHANGE STATUS OF ALERT (UPDATE)
@@ -368,7 +394,7 @@ def updateAlert(request):
 
 # CREATE NEEDS
 
-def createNeeds(request):
+def alert(request):
     pass
 
 
