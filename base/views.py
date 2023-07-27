@@ -521,16 +521,26 @@ def logoutUser(request):
 @login_required(login_url='login')
 def volunteerHome(request):
 
+    pendingNeeds = Needs.objects.filter(status=0)
+
+    activeNeeds = Needs.objects.filter(status=1)
+
+    closedNeeds = Needs.objects.filter(status=2)
+
+    volunteer_state = Volunteer.objects.get(host=request.user).state
+
+    context = {'pendingNeeds':pendingNeeds, 'activeNeeds': activeNeeds, 'closedNeeds':closedNeeds, 'volunteer_state':volunteer_state}
+
     if request.method == 'POST':
         
         requirements = request.POST.get('requirements')
-        host = Volunteer.objects.filter(host=request.user)
+        volunteer = Volunteer.objects.get(host=request.user)
 
-        Needs.objects.create(host=host, requirements=requirements)
+        Needs.objects.create(host=volunteer, requirements=requirements)
 
         return redirect('volunteer-home')
 
-    return render(request, 'Front/volunteer.html')
+    return render(request, 'Front/volunteer.html', context)
 
 
 # User home page
