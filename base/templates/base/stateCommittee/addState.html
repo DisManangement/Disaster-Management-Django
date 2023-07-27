@@ -31,7 +31,8 @@
    
         <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="name" type="text" placeholder="State committee Name">
         <input class="border rounded-lg w-[500px] h-12 outline-none px-4 mb-12 drop-shadow border']" name="number" type="number" placeholder="Contact Number">
-
+        <input type="hidden" name="latitude" id="lat" value="">
+        <input type="hidden" name="longitude" id="lng" value="">
         <select name="state" class="border opacity-50 px-4 w-[500px] h-12 outline-none  drop-shadow border rounded-lg" id="state">
             <option disabled selected value="0">select state</option>
              {% for state in states %}
@@ -55,6 +56,26 @@
 
     
 </div>
+
+<script> 
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+    
+    function showPosition(position) {
+    lat = document.getElementById('lat')
+    lng = document.getElementById('lng')
+     lat.value = position.coords.latitude
+     lng.value = position.coords.longitude
+    }
+
+    
+getLocation()
+    </script>
 
 
 

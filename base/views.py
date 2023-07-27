@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from .forms import StateForm
 from .models import StateCommittee, Volunteer, EndUser, State, Needs
 
@@ -118,6 +120,7 @@ def createState(request):
         stateid = request.POST.get('state')
         location = request.POST.get('location')
         state = State.objects.get(id=stateid)
+        
         
         print('id', stateid)
         print('state', state)
@@ -357,19 +360,167 @@ def editEndUser(request, pk):
 
 #Login Page
 
-def login(request):
-    return render (request, 'Front/Login.html')
+""" def loginPage(request):
+    
+   if request.user.is_authenticated : 
+       return redirect('volunteer-home')
+   
+
+   if request.method == 'POST':
+      username= request.POST.get('username')
+      password = request.POST.get('password')
+      print('pass', password)
+     
+
+      try: 
+        user = User.objects.get(username=username)
+        print('i user', user)
+
+      except:
+          messages.error(request, 'User not found')
+
+      user_login = authenticate(request, username=username, password=password)
+      print('a user', user_login)
+
+      if user_login is not None:
+          login(request, user_login)
+          return redirect('volunteer-home')
+      else : 
+          messages.error(request,"username or password doesn't exist")
+
+          return redirect('login')
+
+
+
+   return render (request, 'Front/Login.html') """
+
+
+def loginPage(request):
+    if request.user.is_authenticated:
+        return redirect('volunteer-home')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, 'User not found')
+            return redirect('login')
+        
+        
+        user_login = authenticate(request, username=username, password=password)
+
+        if user_login is not None:
+            login(request, user_login)
+            return redirect('volunteer-home')
+        else:
+            messages.error(request, "Invalid username or password")
+            return redirect('login')
+
+    return render(request, 'Front/Login.html')
 
 #Register Page
 
 def register(request):
-    return render(request, 'Front/register.html')
+    states = State.objects.all()
+    context = {'states': states}
 
+    if request.method == 'POST':
+       
+       stateid = request.POST.get('state')
+       
+
+       username = request.POST.get('name')
+       phone = request.POST.get('number')
+       state = State.objects.get(id=stateid)
+       location = request.POST.get('location')
+       email = request.POST.get('email')
+       password = request.POST.get('password')
+       latitude = request.POST.get('latitude')
+       longitude = request.POST.get('longitude')
+
+       print('latitude', latitude)
+       print('longitude', longitude)
+
+       if User.objects.filter(email=email).exists():
+           messages.info(request, 'Email already taken')
+           return redirect('register')
+       elif User.objects.filter(username=username):
+           messages.info(request, 'username already taken')
+           return redirect('register')
+       else:
+           user = User.objects.create_user(username=username, email=email, password=password)
+           user.save()
+           Volunteer.objects.create(host=user, name=username, phone=phone, state=state, location=location, latitude=latitude, longitude=longitude)
+           login(request, user)
+
+           return redirect('volunteer-home')
+
+    
+
+
+
+
+    return render(request, 'Front/register.html', context)
+
+
+
+def userRegister(request):
+
+     states = State.objects.all()
+     context = {'states': states}
+
+     if request.method == 'POST':
+       
+       stateid = request.POST.get('state')
+       
+
+       username = request.POST.get('name')
+       phone = request.POST.get('number')
+       state = State.objects.get(id=stateid)
+       location = request.POST.get('location')
+       email = request.POST.get('email')
+       password = request.POST.get('password')
+       latitude = request.POST.get('latitude')
+       longitude = request.POST.get('longitude')
+
+       print('latitude', latitude)
+       print('longitude', longitude)
+
+       if User.objects.filter(email=email).exists():
+           messages.info(request, 'Email already taken')
+           return redirect('user-register')
+       elif User.objects.filter(username=username):
+           messages.info(request, 'username already taken')
+           return redirect('user-register')
+       else:
+           user = User.objects.create_user(username=username, email=email, password=password)
+           user.save()
+           EndUser.objects.create(host=user, name=username, phone=phone, state=state, location=location, latitude=latitude, longitude=longitude)
+           login(request, user)
+
+           return redirect('user-home')
+
+
+     return render(request, 'Front/User/userRegister.html',context)
+
+
+# Logout user
+
+@login_required(login_url='login')
+def logoutUser(request):
+    logout(request)
+
+    return redirect('login')
 
 
 # VOLUNTEER HOME PAGE
 
+@login_required(login_url='login')
 def volunteerHome(request):
+
     if request.method == 'POST':
         
         requirements = request.POST.get('requirements')
@@ -380,6 +531,13 @@ def volunteerHome(request):
         return redirect('volunteer-home')
 
     return render(request, 'Front/volunteer.html')
+
+
+# User home page
+
+def userHome(request):
+    return render(request, 'Front/user/userhome.html')
+
 
 
 #  CREATE ALERTS
