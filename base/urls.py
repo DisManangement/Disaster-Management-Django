@@ -21,7 +21,10 @@ urlpatterns= [
     path('deleteuser/<str:pk>', views.deleteUser, name='delete-user'),
     path('deletevolunteer/<str:pk>', views.deleteVolunteer, name='delete-volunteer'),
     path('volunteerhome', views.volunteerHome, name='volunteer-home'),
-    path('login', views.login, name='login'),
-    path('register', views.register, name='register')
+    path('userhome', views.userHome, name='user-home'),
+    path('login', views.loginPage, name='login'),
+    path('register', views.register, name='register'),
+    path('userregister', views.userRegister, name='user-register'),
+    path('logout', views.logout, name='logout'),
 
 ]
