@@ -58,12 +58,20 @@ class Alert(models.Model):
     status = models.IntegerField(default=0) # 0: pending || 1: closed  
 
 
+
+
 class Needs(models.Model):
     host = models.ForeignKey(Volunteer, on_delete=models.CASCADE, null=True)
     requirements = models.TextField(null=True)
     status = models.IntegerField(default=0)  # 0:pending || 1:open || 2:closed
     is_verified_by_state = models.IntegerField(default=0)
     is_verified_by_admin = models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
+    updated =models.DateTimeField(auto_now=True)
+
+
+    def __str__(self) -> str:
+        return self.requirements
    
 
 
