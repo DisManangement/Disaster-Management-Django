@@ -1,18 +1,64 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import StateForm
-from .models import StateCommittee, Volunteer, EndUser, State, Needs
+from .models import StateCommittee, Volunteer, EndUser, State, Needs, User
+
+
+# decorotors
 
 
 
+
+# @login_required(login_url='login')
+def userOnly(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 3:
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login')  # Redirect to the login page if user type doesn't match
+    return _wrapped_view
+
+
+
+# @login_required(login_url='login')
+def volunteerOnly(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 2:
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login')  # Redirect to the login page if user type doesn't match
+    return _wrapped_view
+
+
+
+# @login_required(login_url='login')
+def stateCommitteeOnly(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 1:
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login')  # Redirect to the login page if user type doesn't match
+    return _wrapped_view
+
+
+# @login_required(login_url='login')
+def adminOnly(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 0:
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login')  # Redirect to the login page if user type doesn't match
+    return _wrapped_view
 
 # Create your views here.
 
-""" ----VIEWS---- """
+""" ----VIEWS FOR ADMIN---- """
 
+@login_required(login_url='login')
+@adminOnly
 def home(request):
 
     endUsers = EndUser.objects.all()
@@ -22,6 +68,8 @@ def home(request):
     return render(request, 'base/user/viewuser.html', context)
 
 
+@login_required(login_url='login')
+@adminOnly
 def stateCommittee(request):
 
     stateCommittee = StateCommittee.objects.all()
@@ -31,6 +79,8 @@ def stateCommittee(request):
 
     return render(request, 'base/stateCommittee/viewStateCommittee.html', context)
 
+@login_required(login_url='login')
+@adminOnly
 def volunteer(request):
 
     volunteers = Volunteer.objects.all()
@@ -40,6 +90,9 @@ def volunteer(request):
 
     return render(request, 'base/volunteer/viewVolunteer.html', context)
 
+
+@login_required(login_url='login')
+@adminOnly
 def alerts(request):
 
     return render(request, 'base/alerts/alerts.html')
@@ -48,41 +101,7 @@ def needs(request):
 
     return render(request, 'base/needs/needs.html')
 
-def addUser(request):
 
-    #SET STATES
-
-    states = State.objects.all()
-
-    context = {'states': states}
-
-
-
-    if request.method =='POST':
-
-        username = request.POST.get('name')
-        phone = request.POST.get('number')
-        location = request.POST.get('location')
-        stateid = request.POST.get('state')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
-        state = State.objects.get(id=stateid)
-
-        if User.objects.filter(email=email).exists():
-            messages.info(request, 'Email Already Taken')
-            return redirect('add-user')
-        elif User.objects.filter(username=username).exists():
-            messages.info(request, 'Username Already Exists')
-            return redirect('add-user')
-        else:
-           user = User.objects.create(username=username, email=email, password=password)
-           user.save()
-
-           EndUser.objects.create(host=user, name=username, location=location, state=state, phone=phone)
-
-           return redirect('/')
-
-    return render(request, 'base/user/adduser.html', context)
 
 def addState(request):
 
@@ -130,11 +149,9 @@ def createState(request):
             messages.info(request, 'Email Taken')
             return redirect('add-state')
 
-        elif User.objects.filter(username=username):
-            messages.info(request, 'Username Taken')
-            return redirect('add-state')
+       
         else:
-             user = User.objects.create_user(username=username, email=email, password=password)
+             user = User.objects.create_user(name=username, email=email, password=password)
              user.save()
 
              StateCommittee.objects.create(host=user,name=username,phone=phone, state=state, location=location)
@@ -145,6 +162,8 @@ def createState(request):
 # --- EDIT EXISTING STATE ---
 
 
+@login_required(login_url='login')
+@adminOnly
 def editState(request, pk):
     stateCommittee = StateCommittee.objects.select_related('host').get(id=pk)
     user = stateCommittee.host
@@ -177,7 +196,7 @@ def editState(request, pk):
         stateCommittee.location = request.POST.get('location')
 
         user.email = email
-        user.username = username
+        user.name = username
         user.set_password(request.POST.get('password'))
 
         stateCommittee.save()
@@ -190,7 +209,8 @@ def editState(request, pk):
     return render(request, 'base/stateCommittee/editState.html', context)
 
 # --- DELETE EXISTING STATE --- 
-
+@login_required(login_url='login')
+@adminOnly
 def deleteState(request,pk):
     
     state = State.objects.get(id=pk)
@@ -207,38 +227,12 @@ def deleteState(request,pk):
 
 """ ---------- VOLUNTEER CRUD OPERATIONS ------ """
 
-#  -----     CREATE VOLUNTEER      ------
-
-
-def createVolunteer(request):
-   if request.method == 'POST':
-       
-       stateid = request.POST.get('state')
-       
-
-       username = request.POST.get('name')
-       phone = request.POST.get('number')
-       state = State.objects.get(id=stateid)
-       location = request.POST.get('location')
-       email = request.POST.get('email')
-       password = request.POST.get('password')
-
-       if User.objects.filter(email=email).exists():
-           messages.info(request, 'Email already taken')
-           return redirect('add-volunteer')
-       elif User.objects.filter(username=username):
-           messages.info(request, 'username already taken')
-           return redirect('add-volunteer')
-       else:
-           user = User.objects.create(username=username, email=email, password=password)
-           user.save()
-           Volunteer.objects.create(host=user, name=username, phone=phone, state=state, location=location)
-
-           return redirect('volunteer')
        
 
  # -----     DELETE EXISTING VOLUNTEER     -----
 
+@login_required(login_url='login')
+@adminOnly
 def deleteVolunteer(request, pk):
     volunteer = Volunteer.objects.get(id=pk)
     volunteer.delete()
@@ -308,6 +302,7 @@ def deleteUser(request, pk):
     user.delete()
     return redirect('/')
 
+
 # edit Enduser  
 
 def editEndUser(request, pk):
@@ -360,61 +355,35 @@ def editEndUser(request, pk):
 
 #Login Page
 
-""" def loginPage(request):
-    
-   if request.user.is_authenticated : 
-       return redirect('volunteer-home')
-   
 
-   if request.method == 'POST':
-      username= request.POST.get('username')
-      password = request.POST.get('password')
-      print('pass', password)
-     
-
-      try: 
-        user = User.objects.get(username=username)
-        print('i user', user)
-
-      except:
-          messages.error(request, 'User not found')
-
-      user_login = authenticate(request, username=username, password=password)
-      print('a user', user_login)
-
-      if user_login is not None:
-          login(request, user_login)
-          return redirect('volunteer-home')
-      else : 
-          messages.error(request,"username or password doesn't exist")
-
-          return redirect('login')
-
-
-
-   return render (request, 'Front/Login.html') """
 
 
 def loginPage(request):
     if request.user.is_authenticated:
-        return redirect('volunteer-home')
+         if request.user.user_type == 3:
+           return redirect('user-home')
+         elif request.user.user_type == 2:
+             return redirect('volunteer-home')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(email=email)
         except User.DoesNotExist:
             messages.error(request, 'User not found')
             return redirect('login')
         
         
-        user_login = authenticate(request, username=username, password=password)
+        user_login = authenticate(request, email=email, password=password)
 
         if user_login is not None:
             login(request, user_login)
-            return redirect('volunteer-home')
+            if user.user_type == 3:
+                return redirect('user-home')
+            elif user.user_type == 2:
+                return redirect('volunteer-home')
         else:
             messages.error(request, "Invalid username or password")
             return redirect('login')
@@ -440,6 +409,7 @@ def register(request):
        password = request.POST.get('password')
        latitude = request.POST.get('latitude')
        longitude = request.POST.get('longitude')
+       usertype = request.POST.get('usertype')
 
        print('latitude', latitude)
        print('longitude', longitude)
@@ -447,11 +417,12 @@ def register(request):
        if User.objects.filter(email=email).exists():
            messages.info(request, 'Email already taken')
            return redirect('register')
-       elif User.objects.filter(username=username):
-           messages.info(request, 'username already taken')
+       if User.objects.filter(username=username).exists():
+           messages.info(request, 'username already Taken')
            return redirect('register')
+      
        else:
-           user = User.objects.create_user(username=username, email=email, password=password)
+           user = User.objects.create(name=username,username=username, email=email,user_type=usertype, password =password)
            user.save()
            Volunteer.objects.create(host=user, name=username, phone=phone, state=state, location=location, latitude=latitude, longitude=longitude)
            login(request, user)
@@ -485,6 +456,7 @@ def userRegister(request):
        password = request.POST.get('password')
        latitude = request.POST.get('latitude')
        longitude = request.POST.get('longitude')
+       user_type = request.POST.get('usertype')
 
        print('latitude', latitude)
        print('longitude', longitude)
@@ -496,7 +468,7 @@ def userRegister(request):
            messages.info(request, 'username already taken')
            return redirect('user-register')
        else:
-           user = User.objects.create_user(username=username, email=email, password=password)
+           user = User.objects.create_user(username=username,name=username,user_type=user_type, email=email, password=password)
            user.save()
            EndUser.objects.create(host=user, name=username, phone=phone, state=state, location=location, latitude=latitude, longitude=longitude)
            login(request, user)
@@ -509,7 +481,7 @@ def userRegister(request):
 
 # Logout user
 
-@login_required(login_url='login')
+
 def logoutUser(request):
     logout(request)
 
@@ -519,6 +491,7 @@ def logoutUser(request):
 # VOLUNTEER HOME PAGE
 
 @login_required(login_url='login')
+@volunteerOnly
 def volunteerHome(request):
 
     pendingNeeds = Needs.objects.filter(status=0)
@@ -544,7 +517,8 @@ def volunteerHome(request):
 
 
 # User home page
-
+@login_required(login_url='login')
+@userOnly 
 def userHome(request):
     return render(request, 'Front/user/userhome.html')
 

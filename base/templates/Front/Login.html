@@ -12,7 +12,7 @@
             {% for message in messages %}
              <p class="mb-2 text-xs text-red-500">{{message}}</p>
              {% endfor %}
-            <input autofocus required type="text" name="username" placeholder="username" class="border w-[400px] mb-12 h-12 rounded outline-none px-3 drop-shadow "> 
+            <input autofocus required type="email" name="email" placeholder="email" class="border w-[400px] mb-12 h-12 rounded outline-none px-3 drop-shadow "> 
             <input required type="password" name="password" placeholder="Password" class="border w-[400px] mb-12 h-12 rounded outline-none px-3 drop-shadow ">
             <input type="submit" name="" id="" value="Login" class="text-white bg-gray-600 rounded font-bold w-[400px] cursor-pointer hover:bg-gray-600/80 p-2 mb-6">
             <p class="text-black opacity-70">Don't have an Account ?<span><a class="text-gray-500 ml-2 hover:text-gray-600 font-semibold" href="{% url 'register' %}">Create Account</a></span> </p>

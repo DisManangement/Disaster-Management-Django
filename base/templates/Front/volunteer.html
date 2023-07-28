@@ -60,14 +60,29 @@
                 </div>
                 
                 <div class="mt-4">
+
+                    {% if pendingNeed.is_verified_by_state == 0  %}
                     
                     <div class="flex items-center">
 
                         <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-check"></i>
                         <p>State Committee Verification Pending... </p>
                     </div>
+                    {% elif pendingNeed.is_verified_by_state == 1 %}
+
+                    <div class="flex items-center">
+
+                        <i class="fa-regular text-green-500 font-bold mr-2 fa-circle-check"></i>
+                        <p>Verified by {{volunteer_state}} State Committee </p>
+                    </div>
+
+                
+                    {% endif %}
+
                 </div>
                 <div class="mt-4">
+
+
                     
                     <div class="flex items-center">
 
@@ -141,7 +156,7 @@
             
             <div class="w-[300px] bg-gray-100/50 mt-4 h-32 p-2 rounded-lg">
                 <h1 class="font-semibold opacity-60 ">Requirements</h1>
-                <p class="p-1 mt-1">{{activeNeed.requirements}}</p>
+                <p class="p-1 font-semibold mt-1">{{activeNeed.requirements}}</p>
             </div>
             <div>
                 <p class="mt-6 font-semibold">{{activeNeed.created|timesince}} ago</p>
@@ -258,36 +273,22 @@
                    <p>Requirements Submitted successfully</p>
                </div>
                
+               
+               
+              
                <div class="mt-4">
                    
                    <div class="flex items-center">
 
-                       <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-check"></i>
-                       <p>State Committee Verification Pending... </p>
-                   </div>
-               </div>
-               <div class="mt-4">
-                   
-                   <div class="flex items-center">
+                       <i class="fa-regular text-red-500 font-bold mr-2 fa-circle-xmark"></i>
 
-                       <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-check"></i>
-                       <p>Admin Verification Pending... </p>
-                   </div>
-               </div>
-               <div class="mt-4">
-                   
-                   <div class="flex items-center">
-
-                       <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-check"></i>
-                       <p>Request Opened </p>
-                   </div>
-               </div>
-               <div class="mt-4">
-                   
-                   <div class="flex items-center">
-
-                       <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-xmark"></i>
-                       <p>Request Closed </p>
+                       {% if closedNeed.rejected_by == 0 %}
+                       <p>Request Closed by You  </p>
+                       {% elif closedNeed.rejected_by == 1 %}
+                       <p>Request Closed by {{volunteer_state}} State Committee  </p>
+                       {% else %}
+                       <p>Request Closed by You  </p>
+                       {% endif %}
                    </div>
                </div>
            </div>
