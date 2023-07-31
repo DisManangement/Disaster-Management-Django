@@ -53,12 +53,20 @@ def adminOnly(view_func):
             return redirect('login')  # Redirect to the login page if user type doesn't match
     return _wrapped_view
 
+def adminStateOnly(view_func):
+    def wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 0 or request.user.user_type == 1 :
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login') 
+    return wrapped_view
+
 # Create your views here.
 
 """ ----VIEWS FOR ADMIN---- """
 
 @login_required(login_url='login')
-@adminOnly
+@adminStateOnly
 def home(request):
 
     endUsers = EndUser.objects.all()
@@ -80,7 +88,7 @@ def stateCommittee(request):
     return render(request, 'base/stateCommittee/viewStateCommittee.html', context)
 
 @login_required(login_url='login')
-@adminOnly
+@adminStateOnly
 def volunteer(request):
 
     volunteers = Volunteer.objects.all()
@@ -92,7 +100,7 @@ def volunteer(request):
 
 
 @login_required(login_url='login')
-@adminOnly
+@adminStateOnly
 def alerts(request):
 
     return render(request, 'base/alerts/alerts.html')
@@ -364,6 +372,8 @@ def loginPage(request):
            return redirect('user-home')
          elif request.user.user_type == 2:
              return redirect('volunteer-home')
+         else:
+             return redirect('home')
 
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -384,17 +394,68 @@ def loginPage(request):
                 return redirect('user-home')
             elif user.user_type == 2:
                 return redirect('volunteer-home')
+            else:
+                return redirect('home')
         else:
             messages.error(request, "Invalid username or password")
             return redirect('login')
-
+ 
     return render(request, 'Front/Login.html')
 
-#Register Page
+#Register Pages
+
+# State Register Page
+
+def stateRegister(request):
+
+    states = State.objects.all()
+    context = {'states': states}
+
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == 'POST':
+        stateid = request.POST.get('state')
+        name = request.POST.get('name')    
+        phone = request.POST.get('number')
+        state = State.objects.get(id=stateid)
+        location = request.POST.get('location')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
+        usertype =request.POST.get('usertype')
+
+        if User.objects.filter(email=email).exists():
+            messages.info(request, 'Email Already Taken')
+            return redirect('state-register')
+        elif User.objects.filter(username=name).exists():
+            messages.info(request, 'Username Already Taken')
+            return redirect('state-register')
+        
+        else:
+            user = User.objects.create_user(username=name, name=name, user_type=usertype, email=email, password=password)
+           
+            state_committee = StateCommittee.objects.create(host=user, name=name, phone=phone, state=state, location=location, latitude=latitude, longitude=longitude)
+             
+            user.save()
+            state_committee.save()
+            login(request, user)
+
+            return redirect('home')
+        
+
+
+
+    return render(request, 'base/stateCommittee/stateRegister.html', context)
+
+#VOLUNTEER REGISTER PAGE
 
 def register(request):
     states = State.objects.all()
     context = {'states': states}
+
+    if request.user.is_authenticated:
+        return render('volunteer-home')
 
     if request.method == 'POST':
        
@@ -422,7 +483,7 @@ def register(request):
            return redirect('register')
       
        else:
-           user = User.objects.create(name=username,username=username, email=email,user_type=usertype, password =password)
+           user = User.objects.create_user(name=username,username=username, email=email,user_type=usertype, password =password)
            user.save()
            Volunteer.objects.create(host=user, name=username, phone=phone, state=state, location=location, latitude=latitude, longitude=longitude)
            login(request, user)
@@ -437,11 +498,16 @@ def register(request):
     return render(request, 'Front/register.html', context)
 
 
+#User Register Page
+
 
 def userRegister(request):
 
      states = State.objects.all()
      context = {'states': states}
+
+     if request.user.is_authenticated:
+         return redirect('user-home')
 
      if request.method == 'POST':
        
@@ -464,7 +530,7 @@ def userRegister(request):
        if User.objects.filter(email=email).exists():
            messages.info(request, 'Email already taken')
            return redirect('user-register')
-       elif User.objects.filter(username=username):
+       elif User.objects.filter(username=username).exists():
            messages.info(request, 'username already taken')
            return redirect('user-register')
        else:
