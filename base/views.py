@@ -390,9 +390,9 @@ def loginPage(request):
 
         if user_login is not None:
             login(request, user_login)
-            if user.user_type == 3:
+            if user_login.user_type == 3:
                 return redirect('user-home')
-            elif user.user_type == 2:
+            elif user_login.user_type == 2:
                 return redirect('volunteer-home')
             else:
                 return redirect('home')
