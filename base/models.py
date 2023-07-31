@@ -26,7 +26,7 @@ class StateCommittee(models.Model):
     phone = models.BigIntegerField( null=True)
     state = models.ForeignKey(State,on_delete=models.CASCADE, null=True)
     location = models.TextField(null=True)
-    latitiude = models.TextField(null=True)
+    latitude = models.TextField(null=True)
     longitude = models.TextField(null=True)
 
 

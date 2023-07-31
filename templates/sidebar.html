@@ -26,10 +26,13 @@
       <!-- end link -->
 
       <!-- link -->
+
+      {% if request.user.userid == 0 %}
       <a href="{% url 'statecommittee' %}" class="mb-3 pb-2 capitalize font-medium text-sm hover:text-teal-600 transition ease-in-out duration-500">
         <i class="fad fa-shopping-cart text-xs mr-2"></i>
         State Committee
       </a>
+      {% endif %}
       <!-- end link -->
 
       <!-- <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">apps</p> -->
