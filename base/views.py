@@ -69,8 +69,16 @@ def adminStateOnly(view_func):
 @adminStateOnly
 def home(request):
 
-    endUsers = EndUser.objects.all()
+    
+    if request.user.user_type == 0:
+       endUsers = EndUser.objects.all()
+    if request.user.user_type == 1:
+        state_committee = StateCommittee.objects.get(host=request.user)
+        state = state_committee.state
 
+        endUsers = EndUser.objects.filter(state=state)
+  
+        
     context = {'endUsers' : endUsers,}
 
     return render(request, 'base/user/viewuser.html', context)
@@ -90,8 +98,16 @@ def stateCommittee(request):
 @login_required(login_url='login')
 @adminStateOnly
 def volunteer(request):
+    if request.user.user_type == 0 :
 
-    volunteers = Volunteer.objects.all()
+     volunteers = Volunteer.objects.all()
+    
+    if request.user.user_type == 1 :
+
+        state_committee = StateCommittee.objects.get(host=request.user)
+        state = state_committee.state 
+
+        volunteers = Volunteer.objects.filter(state=state)
 
     context ={'volunteers':volunteers}
 
@@ -103,11 +119,31 @@ def volunteer(request):
 @adminStateOnly
 def alerts(request):
 
+    
+
     return render(request, 'base/alerts/alerts.html')
 
-def needs(request):
+def  needs(request):
 
-    return render(request, 'base/needs/needs.html')
+    if request.user.user_type == 0 :
+        needs = Needs.objects.filter(is_verified_by_state=1, status=0)
+        open_needs = Needs.objects.filter(status=1)
+        closed_needs = Needs.objects.filter(status=2)
+    if request.user.user_type == 1 :
+        state_committee = StateCommittee.objects.get(host=request.user)
+        needs = Needs.objects.filter(state_committee=state_committee, status=0, is_verified_by_state=0)
+        open_needs = Needs.objects.filter(status=1, state_committee=state_committee)
+        closed_needs = Needs.objects.filter(status=2, state_committee=state_committee)
+
+
+    context = {
+        'needs' : needs,
+        'open_needs':open_needs,
+        'closed_needs' : closed_needs
+               
+               }
+
+    return render(request, 'base/needs/needs.html', context)
 
 
 
@@ -163,8 +199,10 @@ def createState(request):
              user.save()
 
              StateCommittee.objects.create(host=user,name=username,phone=phone, state=state, location=location)
+             
 
              return redirect('statecommittee') 
+        
       
 
 # --- EDIT EXISTING STATE ---
@@ -574,8 +612,15 @@ def volunteerHome(request):
         
         requirements = request.POST.get('requirements')
         volunteer = Volunteer.objects.get(host=request.user)
+        state = volunteer.state
 
-        Needs.objects.create(host=volunteer, requirements=requirements)
+        print(state)
+        
+        state_committee = StateCommittee.objects.filter(state=state).first()
+
+        print(state_committee)
+
+        Needs.objects.create(host=volunteer,state_committee=state_committee, requirements=requirements)
 
         return redirect('volunteer-home')
 
@@ -608,13 +653,98 @@ def alert(request):
 
 # CHANGE STATUS OF NEEDS (UPDATE)
 
-def updateNeeds(request):
-    pass
+# VERIFY BY STATE
+@login_required(login_url='login')
+@adminStateOnly
+def needsVerifyByState(request, pk):
 
+    need = Needs.objects.get(id=pk)
+
+    if request.user.user_type == 1:
+
+       need.is_verified_by_state = 1
+    
+    if request.user.user_type == 0 :
+
+        need.is_verified_by_admin = 1
+        need.status = 1
+
+    need.save()
+
+    return redirect ('needs')
+
+# REJECT BY STATE
+@login_required(login_url='login')
+@adminStateOnly
+def needsRejectByState(request, pk):
+    
+    need = Needs.objects.get(id=pk)
+
+    if request.user.user_type == 1:
+
+      need.is_verified_by_state = 2
+      need.status = 2
+      need.rejected_by = 1
+
+    if request.user.user_type == 0:
+
+        need.is_verified_by_admin =2
+        need.status =2
+        need.rejected_by = 0
+
+    need.save()
+
+    return redirect('needs')
+
+
+# CLOSE NEEDS
+
+def closeNeeds(request, pk):
+    
+    if request.user.user_type == 0 :
+        need = Needs.objects.get(id=pk)
+
+        need.status = 2
+        need.rejected_by= 0
+
+        need.save()
+
+        return redirect('needs')
+
+    elif request.user.user_type == 1 :
+
+        need = Needs.objects.get(id=pk)
+        need.status = 2
+        need.rejected_by = 1
+        need.save()
+
+        return redirect('needs')
+
+    elif request.user.user_type == 2 :
+
+        need = Needs.objects.get(id=pk)
+        need.status = 2
+        need.rejected_by = 2
+        need.save()
+
+        return redirect('volunteer-home')
+    
+    else:
+        return redirect('user-home')
 
     
     
-        
+
+def deleteNeeds(request,pk):
+    need = Needs.objects.get(id=pk)
+    need.delete()
+
+    if request.user.user_type == 0 or request.user.user_type == 1:
+        return redirect('needs')
+    elif request.user.user_type ==2 :
+        return redirect('volunteer-home')
+    else:
+        return redirect('user-home')
    
     
 
