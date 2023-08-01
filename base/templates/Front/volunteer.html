@@ -112,10 +112,10 @@
           
         <div class="w-[253px] h-[170px]">
           
-           <div class="flex flex-col justify-between h-[170px] mt-16  ml-16 ">
-           <button class="border border-green-500 text-green-500 py-1 hover:bg-green-500 hover:text-white w-[100px] outline-none">Edit</button>
-           <button class="border border-red-500 text-red-500 py-1 hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</button>
-           <button class="border border-amber-500 text-amber-500 py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</button>
+           <div class="flex flex-col justify-start gap-8  h-[170px] mt-16  ml-16 ">
+           
+           <a href="{% url 'delete-needs' pendingNeed.id %}" class="border text-center border-red-500 text-red-500 py-1  hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
+           <a href="{% url 'close-needs' pendingNeed.id %}" class="border text-center border-amber-500 text-amber-500 py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
         </div>
 
         </div>
@@ -213,7 +213,7 @@
           
            <div class="flex flex-col justify-start h-[170px] mt-16  ml-16 ">
           
-           <button class="border border-amber-500 text-amber-500 hover:font-bold py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</button>
+           <a href="{% url 'close-needs' activeNeed.id %}" class="border text-center border-amber-500 text-amber-500 hover:font-bold py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
         </div>
 
         </div>
@@ -283,7 +283,7 @@
                        <i class="fa-regular text-red-500 font-bold mr-2 fa-circle-xmark"></i>
 
                        {% if closedNeed.rejected_by == 0 %}
-                       <p>Request Closed by You  </p>
+                       <p>Request Closed by Admin  </p>
                        {% elif closedNeed.rejected_by == 1 %}
                        <p>Request Closed by {{volunteer_state}} State Committee  </p>
                        {% else %}
@@ -299,7 +299,7 @@
          
           <div class="flex flex-col justify-between h-[170px] mt-16  ml-16 ">
           
-          <button class="border border-red-500 text-red-500 py-1 hover:font-bold hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</button>
+          <a href="{% url 'delete-needs' closedNeed.id %}" class="border border-red-500 text-red-500 text-center py-1 hover:font-bold hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
           
        </div>
 

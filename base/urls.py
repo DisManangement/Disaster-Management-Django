@@ -28,4 +28,10 @@ urlpatterns= [
     path('stateregister', views.stateRegister, name='state-register'),
     path('logout', views.logoutUser, name='logout'),
 
+    path('needsverifybystate/<str:pk>', views.needsVerifyByState, name='needs-verify-by-state'),
+    path('needsrejectbystate/<str:pk>', views.needsRejectByState, name='needs-reject-by-state'),
+
+    path('closeneeds/<str:pk>', views.closeNeeds, name='close-needs'),
+    path('deleteneeds/<str:pk>', views.deleteNeeds, name='delete-needs'),
+
 ]
