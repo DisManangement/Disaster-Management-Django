@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import StateForm
-from .models import StateCommittee, Volunteer, EndUser, State, Needs, User
+from .models import StateCommittee, Volunteer, EndUser, State, Needs, User, Alert
 
 
 # decorotors
@@ -12,7 +12,7 @@ from .models import StateCommittee, Volunteer, EndUser, State, Needs, User
 
 
 
-# @login_required(login_url='login')
+
 def userOnly(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if request.user.user_type == 3:
@@ -23,7 +23,7 @@ def userOnly(view_func):
 
 
 
-# @login_required(login_url='login')
+
 def volunteerOnly(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if request.user.user_type == 2:
@@ -34,7 +34,7 @@ def volunteerOnly(view_func):
 
 
 
-# @login_required(login_url='login')
+
 def stateCommitteeOnly(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if request.user.user_type == 1:
@@ -44,7 +44,7 @@ def stateCommitteeOnly(view_func):
     return _wrapped_view
 
 
-# @login_required(login_url='login')
+
 def adminOnly(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if request.user.user_type == 0:
@@ -60,6 +60,32 @@ def adminStateOnly(view_func):
         else:
             return redirect('login') 
     return wrapped_view
+
+def endUserOnly(view_func):
+    def wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 3 :
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login') 
+    return wrapped_view
+
+def adminStateVolunteerOnly(view_func):
+    def wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 0 or request.user.user_type == 1 or request.user.user_type == 2 :
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login') 
+    return wrapped_view
+
+def adminStateUserOnly(view_func):
+    def wrapped_view(request, *args, **kwargs):
+        if request.user.user_type == 0 or request.user.user_type == 1 or request.user.user_type == 3 :
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login') 
+    return wrapped_view
+
+
 
 # Create your views here.
 
@@ -118,12 +144,30 @@ def volunteer(request):
 @login_required(login_url='login')
 @adminStateOnly
 def alerts(request):
+    if request.user.user_type == 0 :
+         pendingAlerts = Alert.objects.filter(is_verified_by_state=1, status=0)
+         openAlerts = Alert.objects.filter(status=1)
+         closedAlerts = Alert.objects.filter(status=2)
+    if request.user.user_type == 1:
+        stateCommittee = StateCommittee.objects.get(host=request.user)
 
+        pendingAlerts = Alert.objects.filter(state_committee=stateCommittee, status=0, is_verified_by_state=0)
+        openAlerts = Alert.objects.filter(state_committee=stateCommittee, status=1)
+        closedAlerts = Alert.objects.filter(state_committee=stateCommittee, status=2)
+
+    context = {
+            'pendingAlerts':pendingAlerts,
+            'openAlerts' : openAlerts,
+            'closedAlerts' : closedAlerts
+    }
     
 
-    return render(request, 'base/alerts/alerts.html')
+    return render(request, 'base/alerts/alerts.html', context)
 
-def  needs(request):
+
+@login_required(login_url='login')
+@adminStateOnly
+def needs(request):
 
     if request.user.user_type == 0 :
         needs = Needs.objects.filter(is_verified_by_state=1, status=0)
@@ -195,7 +239,7 @@ def createState(request):
 
        
         else:
-             user = User.objects.create_user(name=username, email=email, password=password)
+             user = User.objects.create_user(name=username,username=username, email=email, password=password)
              user.save()
 
              StateCommittee.objects.create(host=user,name=username,phone=phone, state=state, location=location)
@@ -278,7 +322,7 @@ def deleteState(request,pk):
  # -----     DELETE EXISTING VOLUNTEER     -----
 
 @login_required(login_url='login')
-@adminOnly
+@adminStateOnly
 def deleteVolunteer(request, pk):
     volunteer = Volunteer.objects.get(id=pk)
     volunteer.delete()
@@ -341,8 +385,8 @@ def editVolunteer(request, pk):
 """  ----  END USER CRUD OPERATIONS    ----- """
 
 # ----    DELETE EXISTING USER    ---- 
-
-
+@login_required(login_url='login')
+@adminStateOnly
 def deleteUser(request, pk):
     user = EndUser.objects.get(id=pk)
     user.delete()
@@ -585,7 +629,7 @@ def userRegister(request):
 
 # Logout user
 
-
+login_required(login_url='login')
 def logoutUser(request):
     logout(request)
 
@@ -635,20 +679,8 @@ def userHome(request):
 
 
 
-#  CREATE ALERTS
 
 
-
-
-# CHANGE STATUS OF ALERT (UPDATE)
-
-def updateAlert(request):
-    pass
-
-# CREATE NEEDS
-
-def alert(request):
-    pass
 
 
 # CHANGE STATUS OF NEEDS (UPDATE)
@@ -698,7 +730,8 @@ def needsRejectByState(request, pk):
 
 
 # CLOSE NEEDS
-
+@login_required(login_url='login')
+@adminStateVolunteerOnly
 def closeNeeds(request, pk):
     
     if request.user.user_type == 0 :
@@ -734,7 +767,8 @@ def closeNeeds(request, pk):
 
     
     
-
+@login_required(login_url='login')
+@adminStateVolunteerOnly
 def deleteNeeds(request,pk):
     need = Needs.objects.get(id=pk)
     need.delete()
@@ -747,8 +781,137 @@ def deleteNeeds(request,pk):
         return redirect('user-home')
    
     
+@login_required(login_url='login')
+@userOnly
+def userRequestPage(request):
 
-   
+    endUser = EndUser.objects.get(host=request.user)
 
+    pendingAlerts = Alert.objects.filter(host=endUser,status=0)
 
+    activeAlerts = Alert.objects.filter(host=endUser,status=1)
+
+    closedAlerts = Alert.objects.filter(host=endUser,status=2)
     
+    endUser_state = endUser.state
+
+    context = {'pendingAlerts':pendingAlerts, 'activeAlerts':activeAlerts, 'closedAlerts':closedAlerts, 'endUser_state':endUser_state}
+
+
+
+    if request.method == 'POST':
+       
+       content = request.POST.get('alertcontent') 
+       endUser = EndUser.objects.get(host=request.user)
+       state = endUser.state
+       state_committee = StateCommittee.objects.filter(state=state).first()
+
+       Alert.objects.create(host=endUser, content=content, state_committee=state_committee)
+
+       return redirect('user-home')
+
+
+
+
+
+    return render(request, 'Front/User/userRequest.html', context)
+
+
+
+# Verify Alert
+
+
+@login_required(login_url='login')
+@adminStateOnly
+def verifyAlert(request,pk):
+    alert = Alert.objects.get(id=pk)
+
+    if request.user.user_type == 1:
+
+       alert.is_verified_by_state = 1
+    
+    if request.user.user_type == 0 :
+
+        alert.is_verified_by_admin = 1
+        alert.status = 1
+
+    alert.save()
+
+    return redirect ('alerts')
+
+
+
+#Reject Alert
+
+@login_required(login_url='login')
+@adminStateOnly
+def rejectAlert(request,pk):
+    
+    alert = Alert.objects.get(id=pk)
+
+    if request.user.user_type == 1:
+
+      alert.is_verified_by_state = 2
+      alert.status = 2
+      alert.rejected_by = 1
+
+    if request.user.user_type == 0:
+
+        alert.is_verified_by_admin =2
+        alert.status =2
+        alert.rejected_by = 0
+
+    alert.save()
+
+    return redirect('alerts')
+
+
+# Delete Alert
+@login_required(login_url='login')
+@adminStateUserOnly
+def deleteAlert(request, pk):
+    alert = Alert.objects.get(id=pk)
+    alert.delete()
+
+    if request.user.user_type == 0 or request.user.user_type == 1:
+        return redirect('alerts')
+    elif request.user.user_type ==2 :
+        return redirect('volunteer-home')
+    else:
+        return redirect('user-home')
+    
+
+@login_required(login_url='login')
+@adminStateUserOnly
+def closeAlert(request, pk):
+    
+    if request.user.user_type == 0 :
+        alert = Alert.objects.get(id=pk)
+
+        alert.status = 2
+        alert.rejected_by= 0
+
+        alert.save()
+
+        return redirect('alerts')
+
+    elif request.user.user_type == 1 :
+
+        alert = Alert.objects.get(id=pk)
+        alert.status = 2
+        alert.rejected_by = 1
+        alert.save()
+
+        return redirect('alerts')
+
+    elif request.user.user_type == 3 :
+
+        alert = Alert.objects.get(id=pk)
+        alert.status = 2
+        alert.rejected_by = 2
+        alert.save()
+
+        return redirect('user-home')
+    
+    else:
+        return redirect('volunteer-home')

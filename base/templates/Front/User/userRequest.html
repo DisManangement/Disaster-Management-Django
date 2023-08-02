@@ -12,10 +12,10 @@
 <div class="w-full h-60 bg-white items-center  flex justify-center  ">
     <form method="POST" action="" class="drop-shadow items-center    justify-center  ">
         {% csrf_token %}
-        <textarea autofocus required class="border p-3 outline-none" name="requirements" id="" cols="60" rows="5" placeholder="Tell Us What you Need ? "></textarea>
+        <textarea autofocus required class="border p-3 outline-none" name="alertcontent" id="" cols="60" rows="5" placeholder="Alert.... "></textarea>
         <div class="flex mt-4">
  
-           <input  class="cursor-pointer hover:bg-gray-500/80 text-sm font-bold text-white bg-gray-500 rounded px-20 w-full py-3" type="submit" value="SEND REQUEST">
+           <input  class="cursor-pointer hover:bg-gray-500/80 text-sm font-bold text-white bg-gray-500 rounded px-20 w-full py-3" type="submit" value="SEND ALERT">
         </div>
         
     </form>
@@ -24,28 +24,28 @@
 
 </div>
 
-<!-- PENDING NEEDS -->
+<!-- PENDING ALERTS -->
 
 
 <div class="w-full bg-white mt-6 ">
-     <h1 class=" font-bold ml-64 text-xl mt-4 text-stone-600 pt-4">Your Pending Requests</h1>
+     <h1 class=" font-bold ml-64 text-xl mt-4 text-stone-600 pt-4">Your Pending Alerts</h1>
 
-     {% if pendingNeeds %}
+     {% if pendingAlerts %}
      <div class="w-[1400px] min-h-[400px]  rounded-xl mx-auto mt-4 py-4  px-2  ">
     <!-- WRAPPER -->
 
-    {% for pendingNeed in pendingNeeds %}
+    {% for pendingAlert in pendingAlerts %}
     <div class="w-[1000px] h-72 border-2 hover:border-yellow-400  bg-white drop-shadow mx-auto rounded-xl mb-8 py-4 px-8 flex justify-between ">
         <div>
             
             <h1 class="border-2 border-yellow-400 text-yellow-400 text-sm font-bold px-6 py-2 w-[130px] text-center rounded-lg">PENDING</h1>
             
             <div class="w-[300px] bg-gray-100/50 mt-4 h-32 p-2 rounded-lg">
-                <h1 class="font-semibold opacity-60 ">Requirements</h1>
-                <p class="p-1 mt-1 font-semibold">{{pendingNeed.requirements}}</p>
+                <h1 class="font-semibold opacity-60 ">Content</h1>
+                <p class="p-1 mt-1 font-semibold">{{pendingAlert.content}}</p>
             </div>
             <div>
-                <p class="mt-6 font-semibold">{{pendingNeed.created|timesince}} ago</p>
+                <p class="mt-6 font-semibold">{{pendingAlert.created|timesince}} ago</p>
             </div>
             
         </div>
@@ -56,24 +56,24 @@
             <div class="mt-4">
                 <div class="flex items-center">
                     <i class="fa-regular text-green-500 opacity-70 font-bold mr-2 fa-circle-check"></i>
-                    <p>Requirements Submitted successfully</p>
+                    <p>Alert Submitted successfully</p>
                 </div>
                 
                 <div class="mt-4">
 
-                    {% if pendingNeed.is_verified_by_state == 0  %}
+                    {% if pendingAlert.is_verified_by_state == 0  %}
                     
                     <div class="flex items-center">
 
                         <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-check"></i>
-                        <p>State Committee Verification Pending... </p>
+                        <p>{{endUser_state}} State Committee Verification Pending... </p>
                     </div>
-                    {% elif pendingNeed.is_verified_by_state == 1 %}
+                    {% elif pendingAlert.is_verified_by_state == 1 %}
 
                     <div class="flex items-center">
 
                         <i class="fa-regular text-green-500 font-bold mr-2 fa-circle-check"></i>
-                        <p>Verified by {{volunteer_state}} State Committee </p>
+                        <p>Verified by {{endUser_state}} State Committee </p>
                     </div>
 
                 
@@ -95,7 +95,7 @@
                     <div class="flex items-center">
 
                         <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-check"></i>
-                        <p>Request Opened </p>
+                        <p>Alert Opened </p>
                     </div>
                 </div>
                 <div class="mt-4">
@@ -103,7 +103,7 @@
                     <div class="flex items-center">
 
                         <i class="fa-regular text-gray-300 font-bold mr-2 fa-circle-xmark"></i>
-                        <p>Request Closed </p>
+                        <p>Alert Closed </p>
                     </div>
                 </div>
             </div>
@@ -114,8 +114,8 @@
           
            <div class="flex flex-col justify-start gap-8  h-[170px] mt-16  ml-16 ">
            
-           <a href="{% url 'delete-needs' pendingNeed.id %}" class="border text-center border-red-500 text-red-500 py-1  hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
-           <a href="{% url 'close-needs' pendingNeed.id %}" class="border text-center border-amber-500 text-amber-500 py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
+           <a href="{% url 'delete-alert' pendingAlert.id %}" class="border text-center border-red-500 text-red-500 py-1  hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
+           <a href="{% url 'close-alert' pendingAlert.id %}" class="border text-center border-amber-500 text-amber-500 py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
         </div>
 
         </div>
@@ -130,7 +130,7 @@
     </div>
     {% else %}
     <div class="w-full h-[200px] text-center flex items-center justify-center  ">
-        <h1 class="font-bold text-xl opacity-60">NO PENDING REQUESTS</h1>
+        <h1 class="font-bold text-xl opacity-60">NO PENDING ALERTS</h1>
     </div>
     {% endif %}
     
@@ -143,23 +143,23 @@
 
 
 <div class="w-full bg-white mt-6 ">
-     <h1 class=" font-bold ml-64 text-xl mt-4 text-stone-600 pt-4">Your Active Requests</h1>
-     {% if activeNeeds %}
+     <h1 class=" font-bold ml-64 text-xl mt-4 text-stone-600 pt-4">Your Active Alerts</h1>
+     {% if activeAlerts %}
      <div class="w-[1400px] min-h-[400px]  rounded-xl mx-auto mt-4 py-4  px-2  ">
     <!-- WRAPPER -->
 
-    {% for activeNeed in activeNeeds %}
+    {% for activeAlert in activeAlerts %}
     <div class="w-[1000px] h-72 border-2 hover:border-green-500  bg-white drop-shadow mx-auto rounded-xl mb-8 py-4 px-8 flex justify-between ">
         <div>
             
             <h1 class="border-2 border-green-500 text-green-500 text-sm font-bold px-6 py-2 w-[100px] text-center rounded-lg">OPEN</h1>
             
             <div class="w-[300px] bg-gray-100/50 mt-4 h-32 p-2 rounded-lg">
-                <h1 class="font-semibold opacity-60 ">Requirements</h1>
-                <p class="p-1 font-semibold mt-1">{{activeNeed.requirements}}</p>
+                <h1 class="font-semibold opacity-60 ">Content</h1>
+                <p class="p-1 font-semibold mt-1">{{activeAlert.content}}</p>
             </div>
             <div>
-                <p class="mt-6 font-semibold">{{activeNeed.created|timesince}} ago</p>
+                <p class="mt-6 font-semibold">{{activeAlert.created|timesince}} ago</p>
             </div>
             
         </div>
@@ -170,7 +170,7 @@
             <div class="mt-4">
                 <div class="flex items-center">
                     <i class="fa-regular text-green-500 opacity-70 font-bold mr-2 fa-circle-check"></i>
-                    <p>Requirements Submitted successfully</p>
+                    <p>Alert Submitted successfully</p>
                 </div>
                 
                 <div class="mt-4">
@@ -213,7 +213,7 @@
           
            <div class="flex flex-col justify-start h-[170px] mt-16  ml-16 ">
           
-           <a href="{% url 'close-needs' activeNeed.id %}" class="border text-center border-amber-500 text-amber-500 hover:font-bold py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
+           <a href="{% url 'close-alert' activeAlert.id %}" class="border text-center border-amber-500 text-amber-500 hover:font-bold py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
         </div>
 
         </div>
@@ -228,7 +228,7 @@
     </div>
     {% else %}
     <div class="w-full h-[200px] text-center flex items-center justify-center  ">
-        <h1 class="font-bold text-xl opacity-60">NO ACTIVE REQUESTS</h1>
+        <h1 class="font-bold text-xl opacity-60">NO ACTIVE ALERTS</h1>
     </div>
     {% endif %}
     
@@ -240,13 +240,13 @@
 <!-- COLSED NEEDS -->
 
 <div class="w-full bg-white mt-6 ">
-    <h1 class=" font-bold ml-64 text-xl mt-4 text-stone-600 pt-4">Your Closed Requests</h1>
+    <h1 class=" font-bold ml-64 text-xl mt-4 text-stone-600 pt-4">Your Closed Alerts</h1>
 
-    {% if closedNeeds %}
+    {% if closedAlerts %}
     <div class="w-[1400px] min-h-[400px]  rounded-xl mx-auto mt-4 py-4  px-2  ">
    <!-- WRAPPER -->
 
-   {% for closedNeed in closedNeeds %}
+   {% for closedAlert in closedAlerts %}
    <div class="w-[1000px] h-72 border-2 hover:border-red-500  bg-white drop-shadow mx-auto rounded-xl mb-8 py-4 px-8 flex justify-between ">
        <div>
            
@@ -255,11 +255,11 @@
            <h1 class="border-2 border-red-400 text-red-400 text-sm font-bold px-6 py-2 w-[130px] text-center rounded-lg">CLOSED</h1>
            
            <div class="w-[300px] bg-gray-100/50 mt-4 h-32 p-2 rounded-lg">
-               <h1 class="font-semibold opacity-60 ">Requirements</h1>
-               <p class="p-1 mt-1 font-semibold">{{closedNeed.requirements}}</p>
+               <h1 class="font-semibold opacity-60 ">Content</h1>
+               <p class="p-1 mt-1 font-semibold">{{closedAlert.content}}</p>
            </div>
            <div>
-               <p class="mt-6 font-semibold">{{closedNeed.created|timesince}} ago</p>
+               <p class="mt-6 font-semibold">{{closedAlert.created|timesince}} ago</p>
            </div>
            
        </div>
@@ -270,7 +270,7 @@
            <div class="mt-4">
                <div class="flex items-center">
                    <i class="fa-regular text-green-500 opacity-70 font-bold mr-2 fa-circle-check"></i>
-                   <p>Requirements Submitted successfully</p>
+                   <p>Alert Submitted successfully</p>
                </div>
                
                
@@ -282,9 +282,9 @@
 
                        <i class="fa-regular text-red-500 font-bold mr-2 fa-circle-xmark"></i>
 
-                       {% if closedNeed.rejected_by == 0 %}
+                       {% if closedAlert.rejected_by == 0 %}
                        <p>Request Closed by Admin  </p>
-                       {% elif closedNeed.rejected_by == 1 %}
+                       {% elif closedAlert.rejected_by == 1 %}
                        <p>Request Closed by {{volunteer_state}} State Committee  </p>
                        {% else %}
                        <p>Request Closed by You  </p>
@@ -299,7 +299,7 @@
          
           <div class="flex flex-col justify-between h-[170px] mt-16  ml-16 ">
           
-          <a href="{% url 'delete-needs' closedNeed.id %}" class="border border-red-500 text-red-500 text-center py-1 hover:font-bold hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
+          <a href="{% url 'delete-alert' closedAlert.id %}" class="border border-red-500 text-red-500 text-center py-1 hover:font-bold hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
           
        </div>
 
@@ -315,7 +315,7 @@
    </div>
    {% else %}
    <div class="w-full h-[200px] text-center flex items-center justify-center  ">
-       <h1 class="font-bold text-xl opacity-60">NO CLOSED REQUESTS</h1>
+       <h1 class="font-bold text-xl opacity-60">NO CLOSED ALERTS</h1>
    </div>
    {% endif %}
    

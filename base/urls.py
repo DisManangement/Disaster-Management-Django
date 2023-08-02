@@ -21,7 +21,7 @@ urlpatterns= [
     path('deleteuser/<str:pk>', views.deleteUser, name='delete-user'),
     path('deletevolunteer/<str:pk>', views.deleteVolunteer, name='delete-volunteer'),
     path('volunteerhome', views.volunteerHome, name='volunteer-home'),
-    path('userhome', views.userHome, name='user-home'),
+    path('userhome', views.userHome, name='user-home-temp'),
     path('login', views.loginPage, name='login'),
     path('register', views.register, name='register'),
     path('userregister', views.userRegister, name='user-register'),
@@ -33,5 +33,13 @@ urlpatterns= [
 
     path('closeneeds/<str:pk>', views.closeNeeds, name='close-needs'),
     path('deleteneeds/<str:pk>', views.deleteNeeds, name='delete-needs'),
+
+    path('user/request/alert', views.userRequestPage, name='user-home'),
+
+    path('approvealert/<str:pk>', views.verifyAlert, name='approve-alert'),
+    path('rejectalert/<str:pk>', views.rejectAlert, name='reject-alert'),
+
+    path('deletealert/<str:pk>', views.deleteAlert, name='delete-alert'),
+    path('closealert/<str:pk>', views.closeAlert, name='close-alert')
 
 ]
