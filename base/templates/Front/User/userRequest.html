@@ -110,12 +110,20 @@
 
         </div>
           
-        <div class="w-[253px] h-[170px]">
+        <div class="w-[253px] h-[170px] mt-4">
+
+            <!-- MAP CONTAINER -->
+             
+            <div class="rounded-lg" id="map"></div>
+
+
+
+            <!-- MAP CONTAINER ENDS -->
           
-           <div class="flex flex-col justify-start gap-8  h-[170px] mt-16  ml-16 ">
+           <div class="w-full gap-8  h-[170px] mt-8 ">
            
-           <a href="{% url 'delete-alert' pendingAlert.id %}" class="border text-center border-red-500 text-red-500 py-1  hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
-           <a href="{% url 'close-alert' pendingAlert.id %}" class="border text-center border-amber-500 text-amber-500 py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
+           <a href="{% url 'delete-alert' pendingAlert.id %}" class="border text-center border-red-500 text-red-500 py-1 px-6  hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
+           <a href="{% url 'close-alert' pendingAlert.id %}" class="border text-center border-amber-500 text-amber-500 py-1 px-6 ml-4 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
         </div>
 
         </div>
@@ -209,9 +217,17 @@
 
         </div>
           
-        <div class="w-[253px] h-[170px]">
+        <div class="w-[253px] h-[170px] mt-4">
+
+             <!-- MAP CONTAINER -->
+             
+             <!-- <div id="map"></div> -->
+
+
+
+             <!-- MAP CONTAINER ENDS -->
           
-           <div class="flex flex-col justify-start h-[170px] mt-16  ml-16 ">
+           <div class="h-[170px] mt-8 ">
           
            <a href="{% url 'close-alert' activeAlert.id %}" class="border text-center border-amber-500 text-amber-500 hover:font-bold py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
         </div>
@@ -295,9 +311,19 @@
 
        </div>
          
-       <div class="w-[253px] h-[170px]">
+       <div class="w-[253px] h-[170px] mt-4">
+
+        <!-- MAP CONTAINER -->
+             
+        <!-- <div id="map"></div> -->
+
+
+
+        <!-- MAP CONTAINER ENDS -->
+ 
+
          
-          <div class="flex flex-col justify-between h-[170px] mt-16  ml-16 ">
+          <div class=" h-[170px] mt-8 ">
           
           <a href="{% url 'delete-alert' closedAlert.id %}" class="border border-red-500 text-red-500 text-center py-1 hover:font-bold hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
           

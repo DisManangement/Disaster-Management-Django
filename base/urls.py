@@ -40,6 +40,8 @@ urlpatterns= [
     path('rejectalert/<str:pk>', views.rejectAlert, name='reject-alert'),
 
     path('deletealert/<str:pk>', views.deleteAlert, name='delete-alert'),
-    path('closealert/<str:pk>', views.closeAlert, name='close-alert')
+    path('closealert/<str:pk>', views.closeAlert, name='close-alert'),
+
+    path('mapalert/<str:pk>', views.mapAlert, name='map-alert'),
 
 ]

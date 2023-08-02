@@ -111,8 +111,33 @@
         </div>
           
         <div class="w-[253px] h-[170px]">
+            
+            <!-- MAP CONTAINER -->
+           <!--  <div class="container">
+                <div class="row mt-4">
+                    <div class="col-4">
+                        <label for="">Latitude and Longitude (comma-separated)</label>
+                        <input
+                            type="text"
+                            name="latlong"
+                            id="latlongTextField"
+                            class="form-control"
+                            placeholder="Enter latitudes and longitudes here separated by commas"
+                        />
+                    </div>
+                    <div class="col-2 mt-4">
+                        <button class="btn btn-primary" onclick="updateMap()">Find Places</button>
+                    </div>
+                </div>
+                <div class="row mt-3 mb-5">
+                    <div id="map"></div>
+                </div>
+            </div> -->
+
+            <!-- MAP CONTAINER ENDS -->
           
            <div class="flex flex-col justify-start gap-8  h-[170px] mt-16  ml-16 ">
+            
            
            <a href="{% url 'delete-needs' pendingNeed.id %}" class="border text-center border-red-500 text-red-500 py-1  hover:bg-red-500 hover:text-white w-[100px] outline-none">Delete</a>
            <a href="{% url 'close-needs' pendingNeed.id %}" class="border text-center border-amber-500 text-amber-500 py-1 hover:bg-amber-500 hover:text-white w-[100px] outline-none">Close</a>
@@ -330,7 +355,6 @@
 
 
 </main>
-
 
 
 
