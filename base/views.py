@@ -919,3 +919,15 @@ def closeAlert(request, pk):
     
     else:
         return redirect('volunteer-home')
+
+
+def mapAlert(request,pk):
+    user = User.objects.get(id=pk)
+    volunteer = Volunteer.objects.get(host=user)
+    volunteer_state = volunteer.state
+    state_committee = StateCommittee.objects.filter(state=volunteer_state).first()
+    alerts = Alert.objects.filter(state_committee=state_committee).first()
+
+    context = {'alerts': alerts}
+
+    return render(request, 'Front/mapAlert.html', context)
