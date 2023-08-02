@@ -641,12 +641,14 @@ def logoutUser(request):
 @login_required(login_url='login')
 @volunteerOnly
 def volunteerHome(request):
+    
+    volunteer = Volunteer.objects.get(host=request.user)
+    
+    pendingNeeds = Needs.objects.filter(host=volunteer,status=0)
 
-    pendingNeeds = Needs.objects.filter(status=0)
+    activeNeeds = Needs.objects.filter(host=volunteer,status=1)
 
-    activeNeeds = Needs.objects.filter(status=1)
-
-    closedNeeds = Needs.objects.filter(status=2)
+    closedNeeds = Needs.objects.filter(host=volunteer,status=2)
 
     volunteer_state = Volunteer.objects.get(host=request.user).state
 
