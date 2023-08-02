@@ -650,7 +650,9 @@ def volunteerHome(request):
 
     volunteer_state = Volunteer.objects.get(host=request.user).state
 
-    context = {'pendingNeeds':pendingNeeds, 'activeNeeds': activeNeeds, 'closedNeeds':closedNeeds, 'volunteer_state':volunteer_state}
+    page = 'volunteer'
+
+    context = {'pendingNeeds':pendingNeeds, 'activeNeeds': activeNeeds, 'closedNeeds':closedNeeds, 'volunteer_state':volunteer_state, 'page':page}
 
     if request.method == 'POST':
         

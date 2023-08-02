@@ -16,6 +16,8 @@
     <!-- end logo -->   
      
     <!-- navbar content toggle -->
+
+    {% if request.user.is_authenticated %}
     <div id="navbarToggle" class="hidden md:flex justify-between  md:fixed right-0 mr-6">
         
       <button class="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center">
@@ -38,6 +40,8 @@
         log out
       </a>
     </div>
+
+    {% endif %}
     <!-- end navbar content toggle -->
 
     <!-- navbar content -->
