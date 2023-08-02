@@ -65,12 +65,19 @@ class EndUser(models.Model):
 class Alert(models.Model):
     host = models.ForeignKey(EndUser , on_delete=models.CASCADE,null=True)
     state_committee = models.ForeignKey(StateCommittee, on_delete=models.CASCADE, null=True)
-    remark = models.CharField(max_length=200, null=True)
+    content = models.TextField(max_length=200, null=True)
     status = models.IntegerField(default=0) # 0: pending || 1: open || 2: closed  
+    is_verified_by_state = models.IntegerField(default=0) # 0:pending || 1:approved || 2:rejected
     is_verified_by_admin = models.IntegerField(default=0) # 0:pending || 1:approved || 2:rejected
     rejected_by = models.IntegerField(null=True, blank=True) #  0:admin || 1:state || 2:volunteer
     created = models.DateTimeField(auto_now_add=True)
     updated =models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created', '-updated']
+
+    def __str__(self) -> str:
+        return self.content
 
 
 
