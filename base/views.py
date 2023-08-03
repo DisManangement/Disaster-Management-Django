@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import StateForm
-from .models import StateCommittee, Volunteer, EndUser, State, Needs, User, Alert, Product
+from .models import StateCommittee, Volunteer, EndUser, State, Needs, User, Alert, Product, Cart, CartItem
 
 
 # decorotors
@@ -995,3 +995,28 @@ def editProduct(request,pk):
 
 
     return render(request, 'base/products/editProduct.html', context)
+
+
+# view all products for users
+
+def userProductView(request):
+    products = Product.objects.all()
+    context = {'products': products}
+    return render(request, 'Front/User/productView.html', context)
+
+
+# adding items to the Cart
+
+def addCart(request,pk):
+    
+    product = Product.objects.get(id=pk)
+    host = EndUser.objects.get(host=request.user)
+
+    cartItem = CartItem.objects.create(host=host, product=product)
+    cartItem.save()
+    Cart.objects.create(host=host, products=cartItem)
+
+    return redirect('products')
+    
+
+    
