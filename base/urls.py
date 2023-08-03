@@ -49,4 +49,7 @@ urlpatterns= [
     path('product/delete/<str:pk>', views.deleteProduct, name='delete-product'),
     path('product/edit/<str:pk>', views.editProduct, name='edit-product'),
 
+    path('user/product/view', views.userProductView, name='user-product-view'),
+    path('cart/add/<str:pk>', views.addCart, name='add-cart')
+
 ]

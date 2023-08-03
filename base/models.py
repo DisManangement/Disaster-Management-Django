@@ -114,5 +114,20 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.title
 
-    
 
+class CartItem(models.Model):
+    host = models.ForeignKey(EndUser, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self) -> str:
+        return self.host.name
+    
+class Cart(models.Model):
+    host = models.ForeignKey(EndUser, on_delete=models.CASCADE, null=True)
+    products= models.ManyToManyField(CartItem, related_name='products', blank=True)
+
+    def __str__(self) -> str:
+        return self.host.name
+
+   

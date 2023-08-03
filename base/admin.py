@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import State, Volunteer, EndUser, Alert, Needs, StateCommittee, User, Product
+from .models import State, Volunteer, EndUser, Alert, Needs, StateCommittee, User, Product, Cart
 
 
 # Register your models here.
@@ -12,3 +12,4 @@ admin.site.register(Alert)
 admin.site.register(Needs)
 admin.site.register(StateCommittee)
 admin.site.register(Product)
+admin.site.register(Cart)

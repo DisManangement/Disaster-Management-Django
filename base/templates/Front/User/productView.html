@@ -1,0 +1,35 @@
+{% extends 'index.html' %} {% block content %}
+
+<div class="main-container w-[1100px] mx-auto">
+  <h1 class="mt-12 mb-6 text-lg font-bold opacity-70">All Products</h1>
+  <div class="product-group flex flex-wrap gap-8 mx-auto justify-between">
+    {% for product in products %}
+
+    <div
+      class="product-container w-[330px] min-h-[370px] rounded-lg drop-shadow bg-white cursor-pointer hover:scale-105 ease-in-out transition-all duration-400 p-4 mb-4 hover:border hover:border-gray-500/60"
+    >
+      <div class="image-container w-full h-[250px] flex justify-center">
+        <img
+          class="rounded-lg"
+          src="{{product.image.url}}"
+          alt=""
+        />
+      </div>
+      <div class="content-container w-full flex items-center flex-col my-2">
+        <h1 class="text-lg font-semibold opacity-70 mb-1">{{product.title}}</h1>
+        <p class="text-xs mb-1">{{product.description}}</p>
+        <h2 class="font-semibold opacity-80 text-lg mb-1">₹ {{product.price}}</h2>
+      </div>
+      <div class="button-container w-full flex justify-center my-1">
+        <a
+          class="bg-gray-500 text-white px-6 py-2 text-sm font-bold rounded-lg hover:bg-gray-500/80"
+          href="{% url 'add-cart' product.id %}"
+          >Add to Cart</a
+        >
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

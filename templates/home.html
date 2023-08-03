@@ -75,6 +75,8 @@
   <div id="navbarToggle" class="hidden md:flex justify-between items-center md:fixed right-0 mr-6">
   {% if request.user.user_type == 2 %}
     <a class="mr-12 font-bold opacity-9 hover:underline text-red-500" href="{% url 'map-alert' request.user.id %}">Alerts</a>
+    {% elif request.user.user_type == 3 %}
+    <a href="#"></a>
       {% endif %}
     <button class="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center">
       <div class="w-8 h-8 overflow-hidden rounded-full">
