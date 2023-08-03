@@ -44,4 +44,9 @@ urlpatterns= [
 
     path('mapalert/<str:pk>', views.mapAlert, name='map-alert'),
 
+    path('products', views.viewProducts, name='products'),
+    path('product/add', views.addProduct, name='add-product'),
+    path('product/delete/<str:pk>', views.deleteProduct, name='delete-product'),
+    path('product/edit/<str:pk>', views.editProduct, name='edit-product'),
+
 ]

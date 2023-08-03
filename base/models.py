@@ -102,6 +102,17 @@ class Needs(models.Model):
 
 
 
+class Product(models.Model):
+    #host =
+    title = models.CharField(max_length=200, null=True)
+    description = models.CharField(max_length=200, null=True)
+    image = models.ImageField(upload_to='product_images', null=True, blank=True)
+    #category =
+    # subcategory =  
+    price = models.IntegerField(null=True) 
+
+    def __str__(self) -> str:
+        return self.title
 
     
 
