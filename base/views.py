@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-
+import os
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import StateForm
-from .models import StateCommittee, Volunteer, EndUser, State, Needs, User, Alert
+from .models import StateCommittee, Volunteer, EndUser, State, Needs, User, Alert, Product
 
 
 # decorotors
@@ -931,3 +931,67 @@ def mapAlert(request,pk):
     context = {'alerts': alerts}
 
     return render(request, 'Front/mapAlert.html', context)
+
+
+
+# PRODUCTS
+
+def viewProducts(request):
+  products = Product.objects.all()
+  context = {'products': products}
+  return render(request, 'base/products/viewProduct.html', context)
+
+# ADD PRODUCTS
+
+def addProduct(request):
+
+    if request.method == "POST":
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        image = request.FILES.get('image')
+
+        Product.objects.create(title=title, description=description, price=price, image=image)
+
+        return redirect('products')
+
+
+
+
+
+    return render(request, 'base/products/addProduct.html')
+
+# DELETE PRODUCTS
+
+def deleteProduct(request, pk):
+    product = Product.objects.get(id=pk)
+    product.delete()
+    return redirect('products')
+
+
+# EDIT PRODUCTS
+
+def editProduct(request,pk):
+    product = Product.objects.get(id=pk)
+    context = {"product": product}
+
+    if request.method == 'POST':
+        product= Product.objects.get(id=pk)
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        image = request.FILES.get('image')
+
+        if len(request.FILES) !=0:
+            if len(product.image) > 0:
+                os.remove(product.image.path)
+            product.image = image
+            
+        product.title =title
+        product.description = description
+        product.price = price
+        product.save()
+        return redirect('products')
+
+
+    return render(request, 'base/products/editProduct.html', context)
