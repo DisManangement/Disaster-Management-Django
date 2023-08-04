@@ -76,7 +76,11 @@
   {% if request.user.user_type == 2 %}
     <a class="mr-12 font-bold opacity-9 hover:underline text-red-500" href="{% url 'map-alert' request.user.id %}">Alerts</a>
     {% elif request.user.user_type == 3 %}
-    <a href="#"></a>
+    <div class="mr-16">
+      <a class="font-semibold  mr-6 hover:underline" href="{% url 'user-product-view' %}">Products</a>
+      <a class="font-semibold  mr-6 hover:underline" href="{% url 'cart' %}">Cart</a>
+    </div>
+    
       {% endif %}
     <button class="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center">
       <div class="w-8 h-8 overflow-hidden rounded-full">
@@ -89,6 +93,7 @@
         <p class="text-xs font-semibold">Admin</p>
         {% elif request.user.user_type == 1  %}
         <p class="text-xs font-semibold">State Committee</p>
+        
         {% endif %}
         
       </div>                        
