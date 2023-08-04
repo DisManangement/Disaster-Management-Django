@@ -1,0 +1,60 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="w-full h-full bg-white rounded-lg">
+
+    <!-- TITLE -->
+
+    <div class="flex justify-between mx-12 pt-6">
+        <h3 class="font-bold bg-gray-200 px-4 rounded-lg py-1">
+           Pending Orders
+        </h3>
+        </div>
+
+    <!-- TABLE STARTS -->
+   
+     
+    
+
+
+<table class="table w-full mt-4">
+    <!-- TABLE HEAD -->
+    <thead class="table-head bg-amber-500 h-14 ">
+        <tr class="bg-gray-400 ">
+            <th>#</th>
+            <th>Customer Name</th>
+            <th>Products</th>
+            <th>Location</th>
+            <th>Total Price</th>
+            <th>Ordered</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <!-- TABLE HEAD ENDS -->
+    
+    <!-- TABLE BODY -->
+    <tbody >
+        <!-- ITEM -->
+        {% for order in orders %}
+        <tr class="odd:bg-gray-100 even:bg-white">
+            <!-- NAME -->
+            <th class="py-4"><p class="text-black font-semibold text-base">1</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{order.cart.host.name}}</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{product.description}}</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{order.cart.host.location}}</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{product.location}}</p></th>
+            
+            <th class="py-4"><p class="text-black font-semibold text-base">{{order.created | timesince}} ago</p></th>
+            <th class="py-4">
+                <a href="#" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Edit</a>
+                <a href="#" class=" outline-none border border-red-600  text-red-600 rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-sm font-semibold">Delete</a>
+            </th>
+        </tr>
+
+        {% endfor %}
+
+        
+      {% endblock content %}
+        

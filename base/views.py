@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import StateForm
-from .models import StateCommittee, Volunteer, EndUser, State, Needs, User, Alert, Product, Cart, CartItem
+from .models import StateCommittee, Volunteer, EndUser, State, Needs, User, Alert, Product, Cart, CartItem, Order
 
 
 # decorotors
@@ -1014,9 +1014,83 @@ def addCart(request,pk):
 
     cartItem = CartItem.objects.create(host=host, product=product)
     cartItem.save()
-    Cart.objects.create(host=host, products=cartItem)
+    cart = Cart.objects.get(host=host, active=0)
+    cart.products.add(cartItem)
 
-    return redirect('products')
+
+    return redirect('cart')
+
+
+# cart for users
+
+def cart(request):
+    user = EndUser.objects.get(host=request.user)
+    cart = Cart.objects.filter(host=user, active =0).first()
+    print(cart)
+    items = cart.products.all()
+
+    total_price_list  = [x.product.price * x.quantity for x in list(items)]
+    
+    item_total = sum(total_price_list)
+    tax = item_total * 0.10
+    to_pay = item_total + tax
     
 
+   
+
+    context = {'cart': cart, 'items':items, 'item_total':item_total, 'tax': tax, 'to_pay': to_pay}
+    return render(request, 'Front/User/cart.html', context)
+
+
+
+# count increment for cart items
+
+def countIncrement(request,pk):
+
+    cartItem = CartItem.objects.get(id=pk)
+    cartItem.quantity +=1
+    cartItem.save()
     
+    return redirect('cart')
+
+
+# count decrement for cart items
+
+def countDecrement(request,pk):
+    cartItem = CartItem.objects.get(id=pk)
+
+
+    if cartItem.quantity == 1 :
+        cartItem.delete()
+    else:
+        cartItem.quantity -= 1
+        cartItem.save()
+    
+    return redirect('cart')
+    
+
+
+# create order
+
+def createOrder(request, pk):
+    host = EndUser.objects.get(host=request.user)
+    cart= Cart.objects.get(id=pk)
+    Order.objects.create(cart= cart)
+    cart.active = 1
+    cart.save()
+    Cart.objects.create(host=host)
+
+
+    return redirect('cart')
+
+
+
+# View Order
+
+def viewOrder(request):
+
+    orders = Order.objects.filter(status=0)
+
+    context = {'orders':orders}
+
+    return render(request, 'base/orders/orderView.html', context)

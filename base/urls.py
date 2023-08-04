@@ -50,6 +50,13 @@ urlpatterns= [
     path('product/edit/<str:pk>', views.editProduct, name='edit-product'),
 
     path('user/product/view', views.userProductView, name='user-product-view'),
-    path('cart/add/<str:pk>', views.addCart, name='add-cart')
+    path('cart/add/<str:pk>', views.addCart, name='add-cart'),
+
+    path('cart', views.cart, name='cart'),
+    path('cart/count/increment/<str:pk>', views.countIncrement, name='count-increment'),
+    path('cart/count/decrement/<str:pk>', views.countDecrement, name='count-decrement'),
+
+    path('user/order/create/<str:pk>', views.createOrder, name='create-order'),
+    path('order/view', views.viewOrder, name='order-view'),
 
 ]

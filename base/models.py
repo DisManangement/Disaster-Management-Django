@@ -126,8 +126,16 @@ class CartItem(models.Model):
 class Cart(models.Model):
     host = models.ForeignKey(EndUser, on_delete=models.CASCADE, null=True)
     products= models.ManyToManyField(CartItem, related_name='products', blank=True)
+    active = models.IntegerField(default=0) # 0: active 1 : inactive
 
     def __str__(self) -> str:
         return self.host.name
 
+
+class Order(models.Model):
+    cart= models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(default=0) # 0: Pending 1: Approved 2: Rejected
    
+    class Meta:
+     ordering = ['-created']
