@@ -16,7 +16,7 @@
    
      
     
-
+{% if order %}
 
 <table class="table w-full mt-4">
     <!-- TABLE HEAD -->
@@ -26,7 +26,7 @@
             <th>Customer Name</th>
             <th>Products</th>
             <th>Location</th>
-            <th>Total Price</th>
+            <th>Total Amount</th>
             <th>Ordered</th>
             <th>Actions</th>
         </tr>
@@ -40,7 +40,7 @@
         {% for order in orders %}
         <tr class="odd:bg-gray-100 even:bg-white">
             <!-- NAME -->
-            <th class="py-4"><p class="text-black font-semibold text-base">1</p></th>
+            <th class="py-4"><p class="text-black font-semibold text-base">{{forloop.counter}}</p></th>
             <th class="py-4"><p class="text-black font-semibold text-base">{{order.cart.host.name}}</p></th>
             <th class="py-4"><p class="text-black font-semibold text-base">{{product.description}}</p></th>
             <th class="py-4"><p class="text-black font-semibold text-base">{{order.cart.host.location}}</p></th>
@@ -48,12 +48,20 @@
             
             <th class="py-4"><p class="text-black font-semibold text-base">{{order.created | timesince}} ago</p></th>
             <th class="py-4">
-                <a href="#" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Edit</a>
-                <a href="#" class=" outline-none border border-red-600  text-red-600 rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-sm font-semibold">Delete</a>
+                <a href="{% url 'accept-order' order.id %}" class="border border-green-600 text-green-600 rounded-lg px-4 py-1 bg-red mr-4 text-sm font-semibold hover:bg-green-600  hover:text-white">Accept</a>
+                <a href="{% url 'reject-order' order.id %}" class=" outline-none border border-red-600  text-red-600 rounded-lg px-4 py-1 hover:bg-red-600 hover:text-white text-sm font-semibold">Reject</a>
             </th>
         </tr>
 
         {% endfor %}
+
+        {% else %}
+         <div class="w-full h-32 flex justify-center bg-gray-400 items-center">
+             <h1 class="text-xl font-bold opacity-75" >No Pending Orders</h1>
+
+         </div>
+
+        {% endif %}
 
         
       {% endblock content %}

@@ -58,5 +58,7 @@ urlpatterns= [
 
     path('user/order/create/<str:pk>', views.createOrder, name='create-order'),
     path('order/view', views.viewOrder, name='order-view'),
+    path('order/accept/<str:pk>', views.acceptOrder, name='accept-order'),
+    path('order/reject/<str:pk>', views.rejectOrder, name='reject-order'),
 
 ]

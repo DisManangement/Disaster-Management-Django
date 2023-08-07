@@ -1094,3 +1094,25 @@ def viewOrder(request):
     context = {'orders':orders}
 
     return render(request, 'base/orders/orderView.html', context)
+
+# Accept Order
+
+def acceptOrder(request, pk):
+
+    order = Order.objects.get(id=pk)
+    order.status = 1  #order accepted
+    order.save()
+
+    return redirect('order-view')
+
+# Reject Order
+
+def rejectOrder(request, pk):
+
+    order = Order.objects.get(id=pk)
+    order.status = 2 # order rejected
+    order.save()
+
+    return redirect('order-view')
+
+    
